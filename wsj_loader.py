@@ -34,11 +34,11 @@ class WSJ():
     @property
     def test(self):
         if self.test_set is None:
-            self.test_set = (np.load(os.path.join(os.environ['WSJ_PATH'], 'test.npy'), encoding='bytes'), None)
+            self.test_set = (np.load(os.path.join(os.environ['WSJ_PATH'], 'test_new.npy'), encoding='bytes'), None)
         return self.test_set
     
 def load_raw(path, name):
     return (
-        np.load(os.path.join(path, '{}.npy'.format(name)), encoding='bytes'), 
-        np.load(os.path.join(path, '{}_labels.npy'.format(name)), encoding='bytes')
+        np.load(os.path.join(path, '{}_new.npy'.format(name)), encoding='bytes'), 
+        np.load(os.path.join(path, '{}_transcripts.npy'.format(name)), encoding='bytes')
     )
