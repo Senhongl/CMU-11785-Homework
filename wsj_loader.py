@@ -39,6 +39,6 @@ class WSJ():
     
 def load_raw(path, name):
     return (
-        np.load(os.path.join(path, '{}_new.npy'.format(name)), encoding='bytes'), 
-        np.load(os.path.join(path, '{}_transcripts.npy'.format(name)), encoding='bytes')
+        np.load(os.path.join(path, '{}_new.npy'.format(name)), allow_pickle = True, encoding='bytes'), 
+        np.load(os.path.join(path, '{}_transcripts.npy'.format(name)), allow_pickle = True, encoding='bytes')
     )
