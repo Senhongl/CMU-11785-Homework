@@ -4,17 +4,17 @@ from torch.nn.utils.rnn import *
 import torch.nn.functional as F
 
 class Attention(nn.Module):
-    def __init__(self, hidden_dim, key_size):
+    def __init__(self, opt):
 		super(Attention, self).__init__()
-		self.linear = nn.Linear(hidden_dim, key_size)
+		self.linear = nn.Linear(opt.embedding_size, opt.key_size)
 
     def forward(self, key, query, value, lengths):
 		"""
-		:param query: (N, H), decoder state of a single timestep
+		:param query: (N, embed_size), decoder state of a single timestep
 		:param key: (N, T, key_size), Key Projection from Encoder per time step
 		:param value: (N, T, value_size), Value Projection from Encoder per time step
 		:param lengths: (N,), lengths of source sequences
-		:returns: (N, H) attended source context, and (N, T) attention vectors
+		:returns: (N, value_size) attended source context, and (N, T) attention vectors
 		"""
 		# convert query from (N, H) -> (N, key_size)
 		query = self.linear(query)

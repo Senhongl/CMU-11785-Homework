@@ -3,27 +3,25 @@ from torch import nn
 from torch.nn.utils.rnn import *
 
 class Encoder(nn.Module):
-  def __init__(self, inp_dim, hidden_dim, embed_dim, num_layers = 3, value_size=128,key_size=128):
+  def __init__(self, opt):
 	super(Encoder, self).__init__()
-	# self.lstm = nn.LSTM(input_size=input_dim,hidden_size=hidden_dim,num_layers=1,bidirectional=True)
-	#Here you need to define the blocks of pBLSTMs
-
-
-	self.num_layers = num_layers
+	
+	self.num_layers = opt.encoder_num_layers
 	self.blstm = []
-	self.blstm.append(nn.LSTM(input_size = inp_dim, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = True))
-	for layer in range(1, num_layers):
+	hidden_dim = opt.encoder_hidden_dim
+	self.blstm.append(nn.LSTM(input_size = opt.input_dim, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional))
+	for layer in range(1, self.num_layers):
 		hidden_dim = hidden_dim * 2
-		self.blstm.append(nn.LSTM(input_size = hidden_dim, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = True))
+		self.blstm.append(nn.LSTM(input_size = hidden_dim, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional))
 
 	self.pooling = []
 	for layer in range(1, num_layers):
 		self.pooling.append(nn.AvgPool1d(kernel_size = 2, stride = 2))
 
-	self.key_network = nn.Linear(hidden_dim * 2**(num_layers - 1), value_size)
-	self.value_network = nn.Linear(hidden_dim * 2**(num_layers - 1), key_size)
+	self.key_network = nn.Linear(hidden_dim * 2**(num_layers - 1), opt.value_size)
+	self.value_network = nn.Linear(hidden_dim * 2**(num_layers - 1), opt.key_size)
   
-  def forward(self,x, lens):
+  def forward(self, x, lens):
 	rnn_inp = pack_padded_sequence(x, lengths = lens, batch_first = False, enforce_sorted = False)
 
 	# the shape of output (T, N, hidden * 2)

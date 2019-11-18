@@ -1,5 +1,8 @@
 import numpy as np
 
+letter_list = ['<sos>', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',\
+             'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', "'", '.', '_', '+', ' ','<eos>']
+			 
 def transform_letter_to_index(transcript, letter_list):
 	'''
 	:param transcript : Transcripts are the text input
@@ -16,6 +19,7 @@ def transform_letter_to_index(transcript, letter_list):
 			for character in string:
 				letters.append(letter_list.index(character))
 
+			letters.append(letter_list.index(' '))
 		letters.append(letter_list.index('<eos>'))
 		letter_to_index_list.append(letters)
 
