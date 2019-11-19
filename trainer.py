@@ -1,8 +1,9 @@
 import time
+import torch
 from torch.optim import Adam
 from options.TrainOptions import *
-from .Encoder import *
-from .Decoder import *
+from Encoder import *
+from Decoder import *
 
 def training(opt, encoder, decoder, train_loader, val_loader):
 	encoder.to(opt.device)
@@ -46,6 +47,13 @@ def training(opt, encoder, decoder, train_loader, val_loader):
 
 if __name__ == '__main__':
 	opt = TrainOptions().parse()
+	speech_train = np.load(opt.dataroot + 'train.npy', allow_pickle=True, encoding='bytes')
+	speech_valid = np.load(opt.dataroot + 'dev.npy', allow_pickle=True, encoding='bytes')
+	# speech_test = np.load(opt.dataroot + 'test.npy', allow_pickle=True, encoding='bytes')
+
+	transcript_train = np.load(opt.dataroot + 'train_transcripts.npy', allow_pickle=True,encoding='bytes')
+	transcript_valid = np.load(opt.dataroot + 'dev_transcripts.npy', allow_pickle=True,encoding='bytes')
+	print("Data Loading Sucessful.....")
 	encoder = Encoder(opt)
 	decoder = Decoder(opt)
 	optimizer = Adam(encoder.parameters() + decoder.parameters(), opt.lr)

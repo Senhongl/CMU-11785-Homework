@@ -4,13 +4,13 @@ import torch
 import random
 from torch.distributions.gumbel import Gumbel
 
-class Decoder(nn.Moudule):
+class Decoder(nn.Module):
 	def __init__(self, opt):
 		super(Decoder, self).__init__()
 		self.opt = opt
 		self.embedding = nn.Embedding(opt.vocab_size, opt.embedding_size)
 		self.attention = Attention(opt)
-		self.gumbel = Gumbel(torch.tensor([0]), torch.tensor([1]))
+		self.gumbel = Gumbel(torch.tensor([0.0]), torch.tensor([1.0]))
 		self.lstm1 = nn.LSTMCell(input_size = opt.embedding_size + opt.value_size, hidden_size = opt.decoder_hidden_dim)
 		self.lstm2 = nn.LSTMCell(input_size = opt.decoder_hidden_dim, hidden_size = opt.key_size)
 
