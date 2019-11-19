@@ -9,7 +9,7 @@ class BaseOptions:
     """
 
     def __init__(self):
-        self.initialize()
+        opt = self.initialize()
 
     def initialize(self):
         """Define the common options that are used in both training and test."""
@@ -32,6 +32,7 @@ class BaseOptions:
         parser.add_argument('--key_size', type = int, default = 128, help = 'The key_size of keys')
         
         self.parser = parser
+        return self.parser.parse_args(args = [])
         
 
     def printer(self, opt):
@@ -51,7 +52,8 @@ class BaseOptions:
         print(message)
 
         # save to the disk
-        os.mkdir(opt.model_name)
+        if not os.path.isdir(opt.model_name):
+            os.mkdir(opt.model_name)
         file_name = os.path.join('./' + opt.model_name, '{}.txt'.format(opt.model_name))
         with open(file_name, 'wt') as opt_file:
             opt_file.write(message)
