@@ -14,9 +14,36 @@
                model_name: LAS_latest                    
                   n_epoch: 10                            
          save_latest_freq: 1                             
-    teacher_forcing_ratio: 0.9                           
+                      tao: 0.1                           
+    teacher_forcing_ratio: 0.5                           	[default: 0.9]
+          test_batch_size: 256                           
          train_batch_size: 64                            
-           val_batch_size: 64                            
+           val_batch_size: 256                           
                value_size: 128                           
                vocab_size: 34                            
 ----------------- End -------------------
+batch = 10, Perplexity = 25.47343044281006, Running time = 10.60395359992981
+batch = 20, Perplexity = 18.48751916885376, Running time = 20.760112285614014
+batch = 30, Perplexity = 15.303973722457886, Running time = 31.27150845527649
+batch = 40, Perplexity = 14.109475755691529, Running time = 42.415106773376465
+batch = 50, Perplexity = 15.43814913034439, Running time = 53.05331206321716
+batch = 60, Perplexity = 12.30415210723877, Running time = 63.682234048843384
+batch = 70, Perplexity = 18.782637524604798, Running time = 73.82684564590454
+batch = 80, Perplexity = 7.263524842262268, Running time = 84.4146797657013
+batch = 90, Perplexity = 25.63348705768585, Running time = 94.98927116394043
+batch = 100, Perplexity = 166.885646212101, Running time = 105.26220035552979
+batch = 110, Perplexity = 43.88726420402527, Running time = 115.8409903049469
+batch = 120, Perplexity = 119.54497007131576, Running time = 126.47008204460144
+batch = 130, Perplexity = 18.75392441749573, Running time = 137.4005811214447
+batch = 140, Perplexity = 16.19474241733551, Running time = 148.20576858520508
+batch = 150, Perplexity = 14.114989817142487, Running time = 158.90695357322693
+batch = 160, Perplexity = 14.933915555477142, Running time = 169.07371473312378
+batch = 170, Perplexity = 9.59685230255127, Running time = 180.06758379936218
+batch = 180, Perplexity = 246.06937277317047, Running time = 190.98149037361145
+batch = 190, Perplexity = 15.7237074136734, Running time = 201.75913500785828
+batch = 200, Perplexity = 6.45558979511261, Running time = 212.92391443252563
+batch = 210, Perplexity = 8.819742000102996, Running time = 223.73280811309814
+batch = 220, Perplexity = 11.797365796566009, Running time = 234.0547034740448
+batch = 230, Perplexity = 8.222821772098541, Running time = 245.1202998161316
+batch = 240, Perplexity = 703.4682511210442, Running time = 255.81879210472107
+batch = 250, Perplexity = 129.89870688915252, Running time = 266.1779818534851

@@ -1,6 +1,7 @@
 from Atten import *
 from torch import nn
 import torch
+import torch.nn.functional as F
 import random
 from torch.distributions.gumbel import Gumbel
 
@@ -29,28 +30,37 @@ class Decoder(nn.Module):
             max_len =  text.shape[1]
             # the shape of embeddings would be (N, text_len, embed_size)
             embeddings = self.embedding(text)
-            prediction = torch.zeros(self.opt.train_batch_size, 1).to(self.opt.device)
+            prediction = torch.zeros(text.size(0), 1).to(self.opt.device)
         elif mode == 'val':
             max_len =  text.shape[1]
             # the shape of embeddings would be (N, text_len, embed_size)
             embeddings = self.embedding(text)
-            prediction = torch.zeros(self.opt.val_batch_size, 1).to(self.opt.device)
+            prediction = torch.zeros(text.size(0), 1).to(self.opt.device)
         else:
             max_len = 250
-            prediction = torch.zeros(self.opt.test_batch_size, 1).to(self.opt.device)
+            prediction = torch.zeros(key.size(0), 1).to(self.opt.device)
 
         predictions = []
         hidden_states = [None, None]
+        if random.random() > self.opt.teacher_forcing_ratio:
+            teacher_forcing = False
+        else:
+            teacher_forcing = True
+
         for i in range(max_len):
             if(self.training):
-                if random.random() > self.opt.teacher_forcing_ratio:
-                    char_embed = self.embedding(prediction.argmax(dim = 1))
+                if not teacher_forcing:
+                    # noise = self.gumbel.sample(prediction.size()).to(self.opt.device)
+                    # noise = noise.squeeze(2)
+                    # prediction = torch.log(prediction) + noise
+                    # prediction = F.softmax(prediction / self.opt.tao, dim = 1)
+                    char_embed = self.embedding(prediction.topk(1)[1].squeeze(1))
                 else:
                     char_embed = embeddings[:,i,:]
             else:
                 noise = self.gumbel.sample(prediction.size()).to(self.opt.device)
                 noise = noise.squeeze(2)
-                prediction += noise
+                prediction = torch.log(prediction) + noise
                 char_embed = self.embedding(prediction.argmax(dim = 1))
 
             context, atten = self.attention(key, char_embed, values, lens)
