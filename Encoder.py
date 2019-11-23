@@ -1,6 +1,8 @@
 import torch
 from torch import nn
 from torch.nn.utils.rnn import *
+from dropout import *
+
 
 class Encoder(nn.Module):
     def __init__(self, opt):
@@ -11,22 +13,28 @@ class Encoder(nn.Module):
         hidden_dim = opt.encoder_hidden_dim
         self.blstm.append(nn.LSTM(input_size = opt.input_dim, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional))
         for layer in range(1, self.num_layers):
-            self.blstm.append(nn.LSTM(input_size = hidden_dim * 2, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional))
+            self.blstm.append(nn.LSTM(input_size = hidden_dim * 4, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional))
 
         self.blstm = torch.nn.ModuleList(self.blstm)
 
-        self.pooling = []
-        for layer in range(1, self.num_layers):
-            self.pooling.append(nn.AvgPool1d(kernel_size = 2, stride = 2))
+        # self.pooling = []
+        # for layer in range(1, self.num_layers):
+        #     self.pooling.append(nn.AvgPool1d(kernel_size = 2, stride = 2))
+        # self.cnn = BasicBlock(opt.input_dim, hidden_dim, kernel_size = 3, stride = 2, padding = 0)
+        # self.blstm = nn.LSTM(input_size = opt.input_dim, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional)
+        # self.pooling = nn.ModuleList(self.pooling)
 
-        self.pooling = nn.ModuleList(self.pooling)
+        # self.dropout =  LockedDropout(dropout = opt.dropout)
 
-        self.key_network = nn.Linear(hidden_dim * 2, opt.value_size)
-        self.value_network = nn.Linear(hidden_dim * 2, opt.key_size)
+        
 
+    def forward(self, inputs, lens):
 
-    def forward(self, x, lens):
-        rnn_inp = pack_padded_sequence(x, lengths = lens, batch_first = False, enforce_sorted = False)
+        # inputs = self.cnn(inputs) 
+        # inputs = inputs.permute(2, 0, 1)
+        rnn_inp = pack_padded_sequence(inputs, lengths = lens, enforce_sorted = False)
+        
+        # outputs, hidden = self.blstm(rnn_inp)
 
         # the shape of output (T, N, hidden * 2)
         outputs, _ = self.blstm[0](rnn_inp)
@@ -34,23 +42,43 @@ class Encoder(nn.Module):
         for layer in range(1, self.num_layers):
 
             outputs, _ = pad_packed_sequence(outputs)
-            # permute the output to the shape of (N, hidden, T)
-            outputs = outputs.permute(1, 2, 0)
+            
+        #     # outputs = outputs
+            # permute the output to the shape of (N, T, hiddens)
+            outputs = outputs.permute(1, 0, 2)
+            if outputs.size(1) % 2 == 1:
+                outputs = outputs[:, :-1, :].reshape(outputs.size(0), outputs.size(1) // 2, outputs.size(2) * 2)
+            else:
+                outputs = outputs.reshape(outputs.size(0), outputs.size(1) // 2, outputs.size(2) * 2)
 
-            # pooling to make the pyramidal structure
-            outputs = self.pooling[layer - 1](outputs)
+        #     # pooling to make the pyramidal structure
+        #     outputs = self.pooling[layer - 1](outputs)
 
-            # permute the output back to the shape of (T, N, hidden)
-            outputs = outputs.permute(2, 0, 1)
+            # permute the output back to the shape of (T, N, hiddens)
+            outputs = outputs.permute(1, 0, 2)
+        #     outputs = self.dropout(outputs)
             # pack the output
             lens = lens // 2
-            outputs = pack_padded_sequence(outputs, lengths = lens, batch_first = False, enforce_sorted = False)
+            outputs = pack_padded_sequence(outputs, lengths = lens, enforce_sorted = False)
 
-            outputs, _ = self.blstm[layer](outputs)
+            outputs, hidden = self.blstm[layer](outputs)
+            
+        outs, lens = pad_packed_sequence(outputs)
 
-        linear_inputs, lens = pad_packed_sequence(outputs)
+        
 
-        keys = self.key_network(linear_inputs)
-        value = self.value_network(linear_inputs)
+        return outs, lens, hidden
 
-        return keys, value, lens
+class SimpleEncoder(nn.Module):
+    def __init__(self, opt):
+        super(SimpleEncoder, self).__init__()
+        # super(SimpleEncoder, self).__int__()
+        self.lstm = nn.LSTM(input_size = opt.input_dim, hidden_size = opt.encoder_hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional)
+
+    def forward(self, x, lens):
+
+        rnn_inp = pack_padded_sequence(x, lengths = lens, batch_first = False, enforce_sorted = False)
+        outputs, hidden = self.lstm(rnn_inp)
+        outputs, _ = pad_packed_sequence(outputs)
+
+        return outputs, hidden

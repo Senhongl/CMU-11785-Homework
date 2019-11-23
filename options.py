@@ -31,9 +31,10 @@ class BaseOptions:
         parser.add_argument('--value_size', type = int, default = 128, help = 'The value size of values')
         parser.add_argument('--key_size', type = int, default = 128, help = 'The key_size of keys')
         parser.add_argument('--tao', type = float, default = 0.1, help = 'tao for gumbel trick')
+        parser.add_argument('--dropout', type = float, default = 0.5, help = 'locked dropout rate')
 
         # network displaying and saving parameters 
-        parser.add_argument('--save_latest_freq', type=int, default = 1, help='frequency of saving the latest results')
+        parser.add_argument('--save_latest_freq', type=int, default = 3, help='frequency of saving the latest results')
         parser.add_argument('--display_freq', type = int, default = 10, help = 'frequency of showing training results on screen')
         # training parameters
         parser.add_argument('--n_epoch', type = int, default = 10, help = 'The number of epoch runs for training')

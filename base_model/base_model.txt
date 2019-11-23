@@ -1,0 +1,425 @@
+----------------- Options ---------------
+                 dataroot: ./data/                       
+       decoder_hidden_dim: 512                           
+       decoder_num_layers: 2                             
+                   device: cuda                          
+             display_freq: 10                            
+                  dropout: 0.5                           
+           embedding_size: 256                           
+       encoder_hidden_dim: 256                           
+       encoder_num_layers: 4                             
+                input_dim: 40                            
+         is_bidirectional: True                          
+                 key_size: 128                           
+                       lr: 0.001                         
+               model_name: base_model                    	[default: LAS_latest]
+                  n_epoch: 10                            
+         save_latest_freq: 3                             
+                      tao: 0.1                           
+    teacher_forcing_ratio: 0.9                           
+          test_batch_size: 256                           
+         train_batch_size: 64                            
+           val_batch_size: 256                           
+               value_size: 128                           
+               vocab_size: 34                            
+----------------- End -------------------
+batch = 10, Perplexity = 23.139961433410644, Running time = 2.4861834049224854
+batch = 20, Perplexity = 18.687012100219725, Running time = 4.891694784164429
+batch = 30, Perplexity = 18.44386558532715, Running time = 7.180508375167847
+batch = 40, Perplexity = 18.50512409210205, Running time = 9.615015029907227
+batch = 50, Perplexity = 18.412742042541502, Running time = 12.027642488479614
+batch = 60, Perplexity = 18.394876289367676, Running time = 14.457785606384277
+batch = 70, Perplexity = 18.2387544631958, Running time = 16.876662731170654
+batch = 80, Perplexity = 18.272106552124022, Running time = 19.321426391601562
+batch = 90, Perplexity = 18.309085655212403, Running time = 21.741922855377197
+batch = 100, Perplexity = 18.307873344421388, Running time = 24.309868335723877
+batch = 110, Perplexity = 18.23470687866211, Running time = 26.999475479125977
+batch = 120, Perplexity = 18.290997886657713, Running time = 29.47253942489624
+batch = 130, Perplexity = 18.30067310333252, Running time = 31.977752685546875
+batch = 140, Perplexity = 18.333600807189942, Running time = 34.443453550338745
+batch = 150, Perplexity = 18.387908363342284, Running time = 37.030617237091064
+batch = 160, Perplexity = 18.21709861755371, Running time = 39.55559778213501
+batch = 170, Perplexity = 18.38939094543457, Running time = 41.97969937324524
+batch = 180, Perplexity = 18.253672409057618, Running time = 44.480937004089355
+batch = 190, Perplexity = 18.220228958129884, Running time = 46.959349632263184
+batch = 200, Perplexity = 18.223315238952637, Running time = 49.35730528831482
+batch = 210, Perplexity = 18.335590171813966, Running time = 51.997244358062744
+batch = 220, Perplexity = 18.32597370147705, Running time = 54.47989320755005
+batch = 230, Perplexity = 18.26797523498535, Running time = 56.989962100982666
+batch = 240, Perplexity = 18.25326271057129, Running time = 59.583518266677856
+batch = 250, Perplexity = 18.237259674072266, Running time = 61.98789119720459
+batch = 260, Perplexity = 18.28844470977783, Running time = 64.45592546463013
+batch = 270, Perplexity = 18.284465026855468, Running time = 66.88590741157532
+batch = 280, Perplexity = 18.254604148864747, Running time = 69.36414384841919
+batch = 290, Perplexity = 18.246015548706055, Running time = 71.76387333869934
+batch = 300, Perplexity = 18.353552055358886, Running time = 74.26726269721985
+batch = 310, Perplexity = 18.257744598388673, Running time = 76.88436079025269
+batch = 320, Perplexity = 18.16913948059082, Running time = 79.3129096031189
+batch = 330, Perplexity = 18.21896324157715, Running time = 81.81561732292175
+batch = 340, Perplexity = 18.21169261932373, Running time = 84.17799139022827
+batch = 350, Perplexity = 18.20327968597412, Running time = 86.59990525245667
+batch = 360, Perplexity = 18.18957653045654, Running time = 89.060786485672
+batch = 370, Perplexity = 18.256930351257324, Running time = 91.56523323059082
+batch = 380, Perplexity = 18.27709045410156, Running time = 94.11706137657166
+================
+Perplexity = 22.713188648223877, Running time = 22.93904185295105
+batch = 10, Perplexity = 18.23190975189209, Running time = 2.389446973800659
+batch = 20, Perplexity = 18.357898330688478, Running time = 4.806630611419678
+batch = 30, Perplexity = 18.254045486450195, Running time = 7.289079904556274
+batch = 40, Perplexity = 18.214753341674804, Running time = 9.77596139907837
+batch = 50, Perplexity = 18.232382774353027, Running time = 12.247889041900635
+batch = 60, Perplexity = 18.291668319702147, Running time = 14.652568817138672
+batch = 70, Perplexity = 18.213772773742676, Running time = 17.14181613922119
+batch = 80, Perplexity = 18.187039947509767, Running time = 19.669045209884644
+batch = 90, Perplexity = 18.181930351257325, Running time = 22.17769145965576
+batch = 100, Perplexity = 18.167050743103026, Running time = 24.679922103881836
+batch = 110, Perplexity = 18.159286308288575, Running time = 27.363646268844604
+batch = 120, Perplexity = 18.042159652709962, Running time = 29.90558362007141
+batch = 130, Perplexity = 18.112398147583008, Running time = 32.43065285682678
+batch = 140, Perplexity = 18.157462120056152, Running time = 34.90070176124573
+batch = 150, Perplexity = 18.195586585998534, Running time = 37.41464376449585
+batch = 160, Perplexity = 18.140226745605467, Running time = 39.85064744949341
+batch = 170, Perplexity = 18.038678550720213, Running time = 42.337626934051514
+batch = 180, Perplexity = 18.03989315032959, Running time = 44.86877155303955
+batch = 190, Perplexity = 18.026542282104494, Running time = 47.40418815612793
+batch = 200, Perplexity = 18.06328182220459, Running time = 50.02090311050415
+batch = 210, Perplexity = 18.01201648712158, Running time = 52.73437833786011
+batch = 220, Perplexity = 18.045753288269044, Running time = 55.132699966430664
+batch = 230, Perplexity = 18.03295955657959, Running time = 57.56716585159302
+batch = 240, Perplexity = 17.928346633911133, Running time = 60.11233878135681
+batch = 250, Perplexity = 17.844268608093262, Running time = 62.66345691680908
+batch = 260, Perplexity = 17.923540115356445, Running time = 65.22289204597473
+batch = 270, Perplexity = 17.740165138244627, Running time = 67.78724479675293
+batch = 280, Perplexity = 17.734428787231444, Running time = 70.45429706573486
+batch = 290, Perplexity = 17.949700355529785, Running time = 73.0126428604126
+batch = 300, Perplexity = 17.7937292098999, Running time = 75.58444380760193
+batch = 310, Perplexity = 17.667949676513672, Running time = 78.31277966499329
+batch = 320, Perplexity = 17.769798469543456, Running time = 80.9186704158783
+batch = 330, Perplexity = 17.797861671447755, Running time = 83.49934983253479
+batch = 340, Perplexity = 17.686887550354005, Running time = 86.21781134605408
+batch = 350, Perplexity = 17.72773857116699, Running time = 88.77422881126404
+batch = 360, Perplexity = 17.6932731628418, Running time = 91.36329388618469
+batch = 370, Perplexity = 17.626955795288087, Running time = 93.95617151260376
+batch = 380, Perplexity = 17.655971717834472, Running time = 96.5518491268158
+================
+Perplexity = 21.88797664642334, Running time = 22.905916213989258
+batch = 10, Perplexity = 17.523059272766112, Running time = 2.4844117164611816
+batch = 20, Perplexity = 17.45359058380127, Running time = 4.99579381942749
+batch = 30, Perplexity = 17.513241958618163, Running time = 7.600939512252808
+batch = 40, Perplexity = 17.430028915405273, Running time = 10.198107719421387
+batch = 50, Perplexity = 17.469087219238283, Running time = 12.836522817611694
+batch = 60, Perplexity = 17.35926685333252, Running time = 15.3761887550354
+batch = 70, Perplexity = 17.386180305480956, Running time = 17.845520734786987
+batch = 80, Perplexity = 17.47506332397461, Running time = 20.25696873664856
+batch = 90, Perplexity = 17.46156063079834, Running time = 22.74226665496826
+batch = 100, Perplexity = 17.278065490722657, Running time = 25.3164279460907
+batch = 110, Perplexity = 17.370034408569335, Running time = 28.105263233184814
+batch = 120, Perplexity = 17.31542682647705, Running time = 30.643680810928345
+batch = 130, Perplexity = 17.361366271972656, Running time = 33.23690485954285
+batch = 140, Perplexity = 17.3241943359375, Running time = 35.78567838668823
+batch = 150, Perplexity = 17.34680233001709, Running time = 38.464923620224
+batch = 160, Perplexity = 17.263689613342287, Running time = 41.13979744911194
+batch = 170, Perplexity = 17.264339637756347, Running time = 43.66951870918274
+batch = 180, Perplexity = 17.33424243927002, Running time = 46.27332782745361
+batch = 190, Perplexity = 17.191823387145995, Running time = 48.82242131233215
+batch = 200, Perplexity = 17.257529067993165, Running time = 51.395331621170044
+batch = 210, Perplexity = 17.239459419250487, Running time = 54.13094234466553
+batch = 220, Perplexity = 17.233437728881835, Running time = 56.685641288757324
+batch = 230, Perplexity = 17.214311027526854, Running time = 59.15098595619202
+batch = 240, Perplexity = 17.18262424468994, Running time = 61.71395015716553
+batch = 250, Perplexity = 17.160663032531737, Running time = 64.2521460056305
+batch = 260, Perplexity = 17.140074920654296, Running time = 66.71605491638184
+batch = 270, Perplexity = 17.119819831848144, Running time = 69.27673316001892
+batch = 280, Perplexity = 17.181008911132814, Running time = 71.77927660942078
+batch = 290, Perplexity = 17.065902137756346, Running time = 74.23404002189636
+batch = 300, Perplexity = 17.137468147277833, Running time = 76.77896666526794
+batch = 310, Perplexity = 17.122815322875976, Running time = 79.49019002914429
+batch = 320, Perplexity = 17.148003768920898, Running time = 81.99092864990234
+batch = 330, Perplexity = 17.135539054870605, Running time = 84.52411127090454
+batch = 340, Perplexity = 16.987452125549318, Running time = 87.10818862915039
+batch = 350, Perplexity = 17.17634811401367, Running time = 89.69949054718018
+batch = 360, Perplexity = 16.944613647460937, Running time = 92.21215534210205
+batch = 370, Perplexity = 17.03349361419678, Running time = 94.7832989692688
+batch = 380, Perplexity = 17.087228775024414, Running time = 97.36444544792175
+================
+Perplexity = 21.14047145843506, Running time = 22.919613122940063
+batch = 10, Perplexity = 17.009542846679686, Running time = 2.6105122566223145
+batch = 20, Perplexity = 17.0085205078125, Running time = 5.0968687534332275
+batch = 30, Perplexity = 16.895452880859374, Running time = 7.602558135986328
+batch = 40, Perplexity = 16.907636642456055, Running time = 10.159430742263794
+batch = 50, Perplexity = 16.97204246520996, Running time = 12.733901262283325
+batch = 60, Perplexity = 16.90352439880371, Running time = 15.248547554016113
+batch = 70, Perplexity = 16.89157657623291, Running time = 17.782748699188232
+batch = 80, Perplexity = 16.876510238647462, Running time = 20.325684309005737
+batch = 90, Perplexity = 16.873532104492188, Running time = 22.855069637298584
+batch = 100, Perplexity = 16.908708572387695, Running time = 25.58204674720764
+batch = 110, Perplexity = 16.924110221862794, Running time = 28.360771656036377
+batch = 120, Perplexity = 16.902345848083495, Running time = 30.97070598602295
+batch = 130, Perplexity = 16.957545852661134, Running time = 33.579779863357544
+batch = 140, Perplexity = 16.97594928741455, Running time = 36.22435116767883
+batch = 150, Perplexity = 16.798743438720702, Running time = 38.75098466873169
+batch = 160, Perplexity = 16.73320960998535, Running time = 41.20189714431763
+batch = 170, Perplexity = 16.887010383605958, Running time = 43.76235842704773
+batch = 180, Perplexity = 16.796935081481934, Running time = 46.27884340286255
+batch = 190, Perplexity = 16.816765213012694, Running time = 48.792747020721436
+batch = 200, Perplexity = 16.779007720947266, Running time = 51.32519459724426
+batch = 210, Perplexity = 16.8061824798584, Running time = 53.89469075202942
+batch = 220, Perplexity = 16.786125946044923, Running time = 56.458258628845215
+batch = 230, Perplexity = 16.81495132446289, Running time = 59.028300285339355
+batch = 240, Perplexity = 16.785990715026855, Running time = 61.68926000595093
+batch = 250, Perplexity = 16.755313110351562, Running time = 64.22258615493774
+batch = 260, Perplexity = 16.58154926300049, Running time = 66.59384942054749
+batch = 270, Perplexity = 16.787486839294434, Running time = 69.16922092437744
+batch = 280, Perplexity = 16.67718086242676, Running time = 71.60704588890076
+batch = 290, Perplexity = 16.85780849456787, Running time = 74.16978096961975
+batch = 300, Perplexity = 16.860027313232422, Running time = 76.7399308681488
+batch = 310, Perplexity = 16.758958625793458, Running time = 79.4428858757019
+batch = 320, Perplexity = 16.758891677856447, Running time = 82.05683922767639
+batch = 330, Perplexity = 16.703015518188476, Running time = 84.62394762039185
+batch = 340, Perplexity = 16.737768936157227, Running time = 87.26314735412598
+batch = 350, Perplexity = 16.74780387878418, Running time = 89.76078486442566
+batch = 360, Perplexity = 16.689891242980956, Running time = 92.35057044029236
+batch = 370, Perplexity = 16.87641258239746, Running time = 95.02024531364441
+batch = 380, Perplexity = 16.80847873687744, Running time = 97.63709807395935
+================
+Perplexity = 20.64423179626465, Running time = 22.68407702445984
+batch = 10, Perplexity = 16.64446887969971, Running time = 2.59200382232666
+batch = 20, Perplexity = 16.54074764251709, Running time = 5.127830266952515
+batch = 30, Perplexity = 16.55195541381836, Running time = 7.767206192016602
+batch = 40, Perplexity = 16.57583656311035, Running time = 10.30151081085205
+batch = 50, Perplexity = 16.512066650390626, Running time = 12.85325002670288
+batch = 60, Perplexity = 16.646424102783204, Running time = 15.304046154022217
+batch = 70, Perplexity = 16.549738121032714, Running time = 17.86478567123413
+batch = 80, Perplexity = 16.634625816345213, Running time = 20.44614815711975
+batch = 90, Perplexity = 16.64987964630127, Running time = 23.042771339416504
+batch = 100, Perplexity = 16.488541221618654, Running time = 25.55411124229431
+batch = 110, Perplexity = 16.542099380493163, Running time = 28.258179187774658
+batch = 120, Perplexity = 16.581165313720703, Running time = 30.738442420959473
+batch = 130, Perplexity = 16.67914161682129, Running time = 33.41944432258606
+batch = 140, Perplexity = 16.572426795959473, Running time = 36.009727478027344
+batch = 150, Perplexity = 16.527239418029787, Running time = 38.527042388916016
+batch = 160, Perplexity = 16.630666542053223, Running time = 41.038914918899536
+batch = 170, Perplexity = 16.618733596801757, Running time = 43.63572883605957
+batch = 180, Perplexity = 16.477010345458986, Running time = 46.13970923423767
+batch = 190, Perplexity = 16.560490798950195, Running time = 48.79742503166199
+batch = 200, Perplexity = 16.633946228027344, Running time = 51.34066915512085
+batch = 210, Perplexity = 16.494495582580566, Running time = 54.01347756385803
+batch = 220, Perplexity = 16.516160583496095, Running time = 56.48196077346802
+batch = 230, Perplexity = 16.563178253173827, Running time = 59.0841224193573
+batch = 240, Perplexity = 16.40947494506836, Running time = 61.71846604347229
+batch = 250, Perplexity = 16.5102237701416, Running time = 64.33941960334778
+batch = 260, Perplexity = 16.390997886657715, Running time = 66.89359021186829
+batch = 270, Perplexity = 16.584407997131347, Running time = 69.47152543067932
+batch = 280, Perplexity = 16.444495964050294, Running time = 72.05732583999634
+batch = 290, Perplexity = 16.488556385040283, Running time = 74.61677956581116
+batch = 300, Perplexity = 16.379979133605957, Running time = 77.15424656867981
+batch = 310, Perplexity = 16.331596851348877, Running time = 79.87515354156494
+batch = 320, Perplexity = 16.568525886535646, Running time = 82.4010078907013
+batch = 330, Perplexity = 16.42289638519287, Running time = 84.88987898826599
+batch = 340, Perplexity = 16.526806449890138, Running time = 87.41115474700928
+batch = 350, Perplexity = 16.283296394348145, Running time = 90.00840520858765
+batch = 360, Perplexity = 16.384898471832276, Running time = 92.46817374229431
+batch = 370, Perplexity = 16.355904293060302, Running time = 94.99139046669006
+batch = 380, Perplexity = 16.27007141113281, Running time = 97.58332800865173
+================
+Perplexity = 20.449885845184326, Running time = 22.279571771621704
+batch = 10, Perplexity = 16.327215576171874, Running time = 2.5758180618286133
+batch = 20, Perplexity = 16.303924083709717, Running time = 5.149633884429932
+batch = 30, Perplexity = 16.263635063171385, Running time = 7.803748607635498
+batch = 40, Perplexity = 16.369199371337892, Running time = 10.42234992980957
+batch = 50, Perplexity = 16.24579725265503, Running time = 12.994656085968018
+batch = 60, Perplexity = 16.20217628479004, Running time = 15.58023715019226
+batch = 70, Perplexity = 16.275375175476075, Running time = 18.10152840614319
+batch = 80, Perplexity = 16.258239364624025, Running time = 20.69229555130005
+batch = 90, Perplexity = 16.31692361831665, Running time = 23.30784583091736
+batch = 100, Perplexity = 16.123906517028807, Running time = 25.903990268707275
+batch = 110, Perplexity = 16.10779266357422, Running time = 28.622255086898804
+batch = 120, Perplexity = 16.279237747192383, Running time = 31.232086896896362
+batch = 130, Perplexity = 16.12295436859131, Running time = 33.77355766296387
+batch = 140, Perplexity = 16.155490398406982, Running time = 36.31171011924744
+batch = 150, Perplexity = 16.24010133743286, Running time = 38.82636332511902
+batch = 160, Perplexity = 16.065973472595214, Running time = 41.45070004463196
+batch = 170, Perplexity = 16.202806377410887, Running time = 44.069002866744995
+batch = 180, Perplexity = 16.066260623931885, Running time = 46.65038990974426
+batch = 190, Perplexity = 16.05598964691162, Running time = 49.29111647605896
+batch = 200, Perplexity = 16.273639965057374, Running time = 51.90897250175476
+batch = 210, Perplexity = 16.177120685577393, Running time = 54.637956619262695
+batch = 220, Perplexity = 16.033718204498292, Running time = 57.146867990493774
+batch = 230, Perplexity = 16.104123878479005, Running time = 59.677006006240845
+batch = 240, Perplexity = 16.048257446289064, Running time = 62.13829231262207
+batch = 250, Perplexity = 16.053601932525634, Running time = 64.59438967704773
+batch = 260, Perplexity = 16.181167221069337, Running time = 67.20361351966858
+batch = 270, Perplexity = 15.821300315856934, Running time = 69.71518230438232
+batch = 280, Perplexity = 15.998825740814208, Running time = 72.31277346611023
+batch = 290, Perplexity = 16.181522941589357, Running time = 74.86757564544678
+batch = 300, Perplexity = 16.20322504043579, Running time = 77.43212747573853
+batch = 310, Perplexity = 16.234204387664796, Running time = 80.04487323760986
+batch = 320, Perplexity = 15.884733486175538, Running time = 82.50984072685242
+batch = 330, Perplexity = 16.05480041503906, Running time = 85.01652503013611
+batch = 340, Perplexity = 15.978938770294189, Running time = 87.54915976524353
+batch = 350, Perplexity = 16.15005292892456, Running time = 90.04520177841187
+batch = 360, Perplexity = 15.908205795288087, Running time = 92.5924665927887
+batch = 370, Perplexity = 16.000012397766113, Running time = 95.14452528953552
+batch = 380, Perplexity = 15.882351303100586, Running time = 97.65285158157349
+================
+Perplexity = 19.180155754089355, Running time = 17.749958276748657
+batch = 10, Perplexity = 15.713011169433594, Running time = 2.5902962684631348
+batch = 20, Perplexity = 16.054384994506837, Running time = 5.185767412185669
+batch = 30, Perplexity = 15.638585090637207, Running time = 7.718953609466553
+batch = 40, Perplexity = 15.676963710784912, Running time = 10.173174381256104
+batch = 50, Perplexity = 15.642667865753173, Running time = 12.748606443405151
+batch = 60, Perplexity = 15.458810424804687, Running time = 15.290790557861328
+batch = 70, Perplexity = 15.866650104522705, Running time = 17.92303776741028
+batch = 80, Perplexity = 15.988396263122558, Running time = 20.476616382598877
+batch = 90, Perplexity = 15.700572109222412, Running time = 22.98258876800537
+batch = 100, Perplexity = 15.99835500717163, Running time = 25.629967212677002
+batch = 110, Perplexity = 15.660906219482422, Running time = 28.332250356674194
+batch = 120, Perplexity = 15.83269910812378, Running time = 30.93396544456482
+batch = 130, Perplexity = 15.513405323028564, Running time = 33.4443359375
+batch = 140, Perplexity = 15.743902492523194, Running time = 36.006537199020386
+batch = 150, Perplexity = 15.439352893829346, Running time = 38.44866943359375
+batch = 160, Perplexity = 15.725169277191162, Running time = 40.96317195892334
+batch = 170, Perplexity = 15.685958957672119, Running time = 43.58073687553406
+batch = 180, Perplexity = 15.48320255279541, Running time = 46.13688516616821
+batch = 190, Perplexity = 15.721990966796875, Running time = 48.68249154090881
+batch = 200, Perplexity = 15.493158435821533, Running time = 51.102989196777344
+batch = 210, Perplexity = 15.5924578666687, Running time = 53.83909249305725
+batch = 220, Perplexity = 15.494384956359863, Running time = 56.31941771507263
+batch = 230, Perplexity = 15.630028247833252, Running time = 58.89262509346008
+batch = 240, Perplexity = 15.647806739807129, Running time = 61.51632308959961
+batch = 250, Perplexity = 15.534697246551513, Running time = 64.0716290473938
+batch = 260, Perplexity = 15.392826652526855, Running time = 66.63783526420593
+batch = 270, Perplexity = 15.39546709060669, Running time = 69.24356269836426
+batch = 280, Perplexity = 15.43428726196289, Running time = 71.91728138923645
+batch = 290, Perplexity = 15.506661796569825, Running time = 74.4742271900177
+batch = 300, Perplexity = 15.304623794555663, Running time = 77.05446648597717
+batch = 310, Perplexity = 15.210777187347412, Running time = 79.85293579101562
+batch = 320, Perplexity = 15.533887100219726, Running time = 82.50409436225891
+batch = 330, Perplexity = 15.397705173492431, Running time = 85.05441188812256
+batch = 340, Perplexity = 15.325496006011964, Running time = 87.56400609016418
+batch = 350, Perplexity = 15.625963592529297, Running time = 90.22823929786682
+batch = 360, Perplexity = 15.412307643890381, Running time = 92.7332706451416
+batch = 370, Perplexity = 15.001030826568604, Running time = 95.36085820198059
+batch = 380, Perplexity = 15.214833831787109, Running time = 97.88776302337646
+================
+Perplexity = 17.988702297210693, Running time = 19.141757011413574
+batch = 10, Perplexity = 14.883372592926026, Running time = 2.54888916015625
+batch = 20, Perplexity = 14.762104988098145, Running time = 4.992512464523315
+batch = 30, Perplexity = 14.981997299194337, Running time = 7.538101434707642
+batch = 40, Perplexity = 15.153554439544678, Running time = 9.964418649673462
+batch = 50, Perplexity = 14.857968997955322, Running time = 12.510179996490479
+batch = 60, Perplexity = 15.08849811553955, Running time = 15.074271440505981
+batch = 70, Perplexity = 14.917151165008544, Running time = 17.60142421722412
+batch = 80, Perplexity = 15.200386238098144, Running time = 20.163681507110596
+batch = 90, Perplexity = 14.972063159942627, Running time = 22.745776891708374
+batch = 100, Perplexity = 15.004683685302734, Running time = 25.385164499282837
+batch = 110, Perplexity = 15.443381690979004, Running time = 28.13337016105652
+batch = 120, Perplexity = 14.90573787689209, Running time = 30.631633520126343
+batch = 130, Perplexity = 15.525045394897461, Running time = 33.28559470176697
+batch = 140, Perplexity = 14.775008296966552, Running time = 35.89716577529907
+batch = 150, Perplexity = 14.997252082824707, Running time = 38.437307596206665
+batch = 160, Perplexity = 14.84290246963501, Running time = 40.861778020858765
+batch = 170, Perplexity = 14.528518581390381, Running time = 43.30711817741394
+batch = 180, Perplexity = 14.716135787963868, Running time = 45.816667318344116
+batch = 190, Perplexity = 14.608768939971924, Running time = 48.33943510055542
+batch = 200, Perplexity = 14.753926086425782, Running time = 50.90984582901001
+batch = 210, Perplexity = 14.397488880157471, Running time = 53.61652898788452
+batch = 220, Perplexity = 14.92658052444458, Running time = 56.2205011844635
+batch = 230, Perplexity = 14.554172611236572, Running time = 58.766178131103516
+batch = 240, Perplexity = 14.861257362365723, Running time = 61.29812169075012
+batch = 250, Perplexity = 14.690414428710938, Running time = 63.80024838447571
+batch = 260, Perplexity = 14.391576290130615, Running time = 66.39672374725342
+batch = 270, Perplexity = 14.669038486480712, Running time = 68.98253035545349
+batch = 280, Perplexity = 15.055328941345214, Running time = 71.58533978462219
+batch = 290, Perplexity = 14.574593639373779, Running time = 74.17694473266602
+batch = 300, Perplexity = 14.505479907989502, Running time = 76.80536985397339
+batch = 310, Perplexity = 14.821983528137206, Running time = 79.50359034538269
+batch = 320, Perplexity = 14.977485466003419, Running time = 82.09585165977478
+batch = 330, Perplexity = 14.88752269744873, Running time = 84.63426494598389
+batch = 340, Perplexity = 14.17970666885376, Running time = 87.07196021080017
+batch = 350, Perplexity = 14.464156818389892, Running time = 89.61263871192932
+batch = 360, Perplexity = 14.517417240142823, Running time = 92.18172073364258
+batch = 370, Perplexity = 13.966205024719239, Running time = 94.64597463607788
+batch = 380, Perplexity = 14.379512119293214, Running time = 97.1770544052124
+================
+Perplexity = 16.317655324935913, Running time = 13.898967027664185
+batch = 10, Perplexity = 14.382414245605469, Running time = 2.4209611415863037
+batch = 20, Perplexity = 14.41765832901001, Running time = 4.978757381439209
+batch = 30, Perplexity = 13.795663356781006, Running time = 7.460644245147705
+batch = 40, Perplexity = 14.318118667602539, Running time = 10.060426473617554
+batch = 50, Perplexity = 14.333124256134033, Running time = 12.571692705154419
+batch = 60, Perplexity = 13.968731307983399, Running time = 15.212965250015259
+batch = 70, Perplexity = 14.11605978012085, Running time = 17.807734966278076
+batch = 80, Perplexity = 14.105867958068847, Running time = 20.36635947227478
+batch = 90, Perplexity = 14.019878673553468, Running time = 22.89143657684326
+batch = 100, Perplexity = 13.455084609985352, Running time = 25.36251926422119
+batch = 110, Perplexity = 13.766740989685058, Running time = 28.04555630683899
+batch = 120, Perplexity = 14.420997524261475, Running time = 30.556902647018433
+batch = 130, Perplexity = 13.95106906890869, Running time = 33.0811071395874
+batch = 140, Perplexity = 13.836074352264404, Running time = 35.721362829208374
+batch = 150, Perplexity = 13.749117183685303, Running time = 38.25828194618225
+batch = 160, Perplexity = 13.12468729019165, Running time = 40.80007791519165
+batch = 170, Perplexity = 13.940169143676759, Running time = 43.43921613693237
+batch = 180, Perplexity = 14.202091026306153, Running time = 46.01829504966736
+batch = 190, Perplexity = 14.156369686126709, Running time = 48.56352758407593
+batch = 200, Perplexity = 14.082894134521485, Running time = 51.16987419128418
+batch = 210, Perplexity = 13.955345821380615, Running time = 53.95064973831177
+batch = 220, Perplexity = 13.901504516601562, Running time = 56.610236167907715
+batch = 230, Perplexity = 13.606906604766845, Running time = 59.19755744934082
+batch = 240, Perplexity = 14.03130807876587, Running time = 61.809574842453
+batch = 250, Perplexity = 13.273694610595703, Running time = 64.37651991844177
+batch = 260, Perplexity = 13.445527362823487, Running time = 66.99893403053284
+batch = 270, Perplexity = 13.962443161010743, Running time = 69.53911113739014
+batch = 280, Perplexity = 13.576614475250244, Running time = 72.0680365562439
+batch = 290, Perplexity = 13.669341373443604, Running time = 74.70335102081299
+batch = 300, Perplexity = 13.577634334564209, Running time = 77.29470419883728
+batch = 310, Perplexity = 13.66510591506958, Running time = 80.03574800491333
+batch = 320, Perplexity = 13.858581733703613, Running time = 82.5927209854126
+batch = 330, Perplexity = 13.003295707702637, Running time = 85.17190504074097
+batch = 340, Perplexity = 13.777716255187988, Running time = 87.67410087585449
+batch = 350, Perplexity = 13.680021953582763, Running time = 90.20942664146423
+batch = 360, Perplexity = 13.718237113952636, Running time = 92.78824090957642
+batch = 370, Perplexity = 13.49793586730957, Running time = 95.38284134864807
+batch = 380, Perplexity = 14.136248874664307, Running time = 97.91913723945618
+================
+Perplexity = 14.36886477470398, Running time = 12.984956979751587
+batch = 10, Perplexity = 12.981046867370605, Running time = 2.6428496837615967
+batch = 20, Perplexity = 12.790453338623047, Running time = 5.2385358810424805
+batch = 30, Perplexity = 13.437072849273681, Running time = 7.795360565185547
+batch = 40, Perplexity = 13.438958549499512, Running time = 10.272289991378784
+batch = 50, Perplexity = 13.990430927276611, Running time = 12.841267108917236
+batch = 60, Perplexity = 13.37855863571167, Running time = 15.366025447845459
+batch = 70, Perplexity = 13.892493343353271, Running time = 17.943480968475342
+batch = 80, Perplexity = 13.432569694519042, Running time = 20.442049980163574
+batch = 90, Perplexity = 13.678246116638183, Running time = 23.093226194381714
+batch = 100, Perplexity = 13.037332916259766, Running time = 25.576953649520874
+batch = 110, Perplexity = 13.507067394256591, Running time = 28.28742814064026
+batch = 120, Perplexity = 12.17678451538086, Running time = 30.8145170211792
+batch = 130, Perplexity = 12.76160135269165, Running time = 33.37032866477966
+batch = 140, Perplexity = 14.147845935821532, Running time = 35.96307301521301
+batch = 150, Perplexity = 13.709657382965087, Running time = 38.55604076385498
+batch = 160, Perplexity = 13.272450637817382, Running time = 41.22103929519653
+batch = 170, Perplexity = 13.142736530303955, Running time = 43.86842966079712
+batch = 180, Perplexity = 12.55815143585205, Running time = 46.47499871253967
+batch = 190, Perplexity = 13.430615901947021, Running time = 48.99012589454651
+batch = 200, Perplexity = 12.930568313598632, Running time = 51.56544494628906
+batch = 210, Perplexity = 12.794012451171875, Running time = 54.30032730102539
+batch = 220, Perplexity = 12.899069499969482, Running time = 56.9011595249176
+batch = 230, Perplexity = 13.377796077728272, Running time = 59.480674028396606
+batch = 240, Perplexity = 12.794559860229493, Running time = 62.092031717300415
+batch = 250, Perplexity = 12.718795680999756, Running time = 64.70265889167786
+batch = 260, Perplexity = 13.12336835861206, Running time = 67.2216522693634
+batch = 270, Perplexity = 12.888977241516113, Running time = 69.74340271949768
+batch = 280, Perplexity = 13.106045722961426, Running time = 72.25076532363892
+batch = 290, Perplexity = 12.905146503448487, Running time = 74.74937891960144
+batch = 300, Perplexity = 12.663945579528809, Running time = 77.26239085197449
+batch = 310, Perplexity = 12.584527587890625, Running time = 79.86903190612793
+batch = 320, Perplexity = 13.206935501098632, Running time = 82.37369799613953
+batch = 330, Perplexity = 13.043401527404786, Running time = 84.86459636688232
+batch = 340, Perplexity = 12.826218509674073, Running time = 87.55197715759277
+batch = 350, Perplexity = 12.305194759368897, Running time = 90.18463158607483
+batch = 360, Perplexity = 13.179984283447265, Running time = 92.72574257850647
+batch = 370, Perplexity = 12.47501630783081, Running time = 95.31575655937195
+batch = 380, Perplexity = 13.037504959106446, Running time = 97.87160611152649
+================
+Perplexity = 13.342385530471802, Running time = 16.028862476348877

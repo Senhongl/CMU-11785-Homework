@@ -1,0 +1,62 @@
+----------------- Options ---------------
+                 dataroot: ./data/                       
+       decoder_hidden_dim: 512                           
+       decoder_num_layers: 2                             
+                   device: cuda                          
+             display_freq: 10                            
+                  dropout: 0.5                           
+           embedding_size: 256                           
+       encoder_hidden_dim: 256                           
+       encoder_num_layers: 4                             
+                input_dim: 40                            
+         is_bidirectional: True                          
+                 key_size: 128                           
+                       lr: 0.001                         
+               model_name: pre_train_model               	[default: LAS_latest]
+                  n_epoch: 10                            
+         save_latest_freq: 3                             
+                      tao: 0.1                           
+    teacher_forcing_ratio: 0.0                           	[default: 0.9]
+          test_batch_size: 256                           
+         train_batch_size: 64                            
+           val_batch_size: 256                           
+               value_size: 128                           
+               vocab_size: 34                            
+----------------- End -------------------
+batch = 10, Perplexity = 22.8725679397583, Running time = 5.022813320159912
+batch = 20, Perplexity = 18.55033931732178, Running time = 9.908053874969482
+batch = 30, Perplexity = 18.478729820251466, Running time = 14.79744029045105
+batch = 40, Perplexity = 18.470434379577636, Running time = 19.624305248260498
+batch = 50, Perplexity = 18.371627044677734, Running time = 24.527251482009888
+batch = 60, Perplexity = 18.5303674697876, Running time = 29.389132976531982
+batch = 70, Perplexity = 18.37685947418213, Running time = 34.376583099365234
+batch = 80, Perplexity = 18.424452590942384, Running time = 39.493818521499634
+batch = 90, Perplexity = 18.27840576171875, Running time = 44.449542760849
+batch = 100, Perplexity = 18.3708194732666, Running time = 49.42828845977783
+batch = 110, Perplexity = 18.283397102355956, Running time = 54.52338457107544
+batch = 120, Perplexity = 18.3118745803833, Running time = 59.37629294395447
+batch = 130, Perplexity = 18.23919086456299, Running time = 64.47050642967224
+batch = 140, Perplexity = 18.34020290374756, Running time = 69.629714012146
+batch = 150, Perplexity = 18.238607978820802, Running time = 74.69677305221558
+batch = 160, Perplexity = 18.24597625732422, Running time = 79.50449895858765
+batch = 170, Perplexity = 18.31667423248291, Running time = 84.44883680343628
+batch = 180, Perplexity = 18.21290531158447, Running time = 89.2811439037323
+batch = 190, Perplexity = 18.234549140930177, Running time = 94.27244830131531
+batch = 200, Perplexity = 18.214065551757812, Running time = 99.18502116203308
+batch = 210, Perplexity = 18.156462287902833, Running time = 104.45875525474548
+batch = 220, Perplexity = 18.232807159423828, Running time = 109.34195375442505
+batch = 230, Perplexity = 18.271535873413086, Running time = 114.43731355667114
+batch = 240, Perplexity = 18.264178848266603, Running time = 119.39149498939514
+batch = 250, Perplexity = 18.232659339904785, Running time = 124.3092474937439
+batch = 260, Perplexity = 18.21340160369873, Running time = 129.21160984039307
+batch = 270, Perplexity = 18.22008686065674, Running time = 134.28390550613403
+batch = 280, Perplexity = 18.29153823852539, Running time = 139.13400292396545
+batch = 290, Perplexity = 18.150754547119142, Running time = 143.99222135543823
+batch = 300, Perplexity = 18.166063117980958, Running time = 148.92360472679138
+batch = 310, Perplexity = 18.15537338256836, Running time = 154.0020067691803
+batch = 320, Perplexity = 18.10209732055664, Running time = 159.1105842590332
+batch = 330, Perplexity = 18.20413417816162, Running time = 163.97215294837952
+batch = 340, Perplexity = 18.245130729675292, Running time = 169.00291752815247
+batch = 350, Perplexity = 18.215415954589844, Running time = 174.11447405815125
+batch = 360, Perplexity = 18.1931095123291, Running time = 179.00027632713318
+batch = 370, Perplexity = 18.154895973205566, Running time = 184.02161574363708
