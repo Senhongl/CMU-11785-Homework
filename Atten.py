@@ -8,8 +8,6 @@ class Attention(nn.Module):
         super(Attention, self).__init__()
         self.opt = opt
         
-        self.query_network = nn.Linear(opt.embedding_size, opt.key_size)
-
         
     def forward(self, key, value, query, lengths):
         """
@@ -19,16 +17,14 @@ class Attention(nn.Module):
         :param lengths: (N,), lengths of source sequences
         :returns: (N, value_size) attended source context, and (N, T) attention vectors
         """
-        
-        # convert query from (N, E) -> (N, key_size)
-        query = self.query_network(query)
         # Input/output shape of bmm: (N, T, key_size), (N, key_size, 1) -> (N, T, 1)
-        attention = torch.bmm(key, query.unsqueeze(2)).squeeze(2)
+        attention = torch.bmm(key, query.unsqueeze(2)).squeeze(2) 
+        # attention = torch.bmm(key, query.unsqueeze(2)).squeeze(2) / (self.opt.key_size**0.5 / 2)
         # attention /= (torch.norm(key, p = 2, dim = (1, 2)) * torch.norm(query, p = 2, dim = 1)).unsqueeze(1)
 
         # Create an (N, T) boolean mask for all padding positions
         # Make use of broadcasting: (1, T), (N, 1) -> (N, T)
-        mask = torch.arange(key.size(1)).unsqueeze(0) >= lengths.unsqueeze(1)
+        mask = torch.arange(key.size(1)).unsqueeze(0) >= lengths.unsqueeze(1).cpu()
         mask = mask.to(self.opt.device)
         # Set attention logits at padding positions to negative infinity.
         attention.masked_fill_(mask, -1e9)

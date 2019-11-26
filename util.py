@@ -105,7 +105,23 @@ def collect_word(transcript_train, transcript_val):
 
     return word_dict, np.array(word_list), word_to_index_train, word_to_index_val
 
-        
+def transform_index_to_word(transcript, word_list):
+    index_to_word = []
+    for batch_utterance in transcript:
+        for utterance in batch_utterance:
+            utterance = utterance.T
+            tmp_utterance = ''
+            for idx in utterance:
+                word_idx = np.argmax(idx)
+                if word_idx == 1:
+                    break
+                tmp_utterance += word_list[word_idx]
+                tmp_utterance += ' '
+
+            index_to_word.append(tmp_utterance)
+
+    return index_to_word
+
 
 letter_dict = {'<sos>': 0, 'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10, 'K': 11, 'L': 12, 'M': 13, 'N': 14, 'O': 15, 'P': 16, 'Q': 17,\
 'R': 18, 'S': 19, 'T': 20, 'U': 21, 'V': 22, 'W': 23, 'X': 24, 'Y': 25, 'Z': 26, '-': 27, "'": 28, '.': 29, '_': 30, '+': 31, ' ': 32, '<eos>': 33}
@@ -142,8 +158,8 @@ def transform_index_to_letter(transcript):
     '''
     index_to_letter_list = []
     for batch_utterances in transcript:
-        letters = ''
         for utterance in batch_utterances:
+            letters = ''
             utterance = utterance.argmax(dim = 0)
             for idx in utterance:
                 letters += letter_list[idx]

@@ -19,16 +19,21 @@ def inference(opt, encoder, decoder, test_loader):
         utterances = utterances.to(opt.device)
         u_lens = u_lens.to(opt.device)
 
-        keys, values, out_lens, hidden = encoder(utterances, u_lens)
+        outs, out_lens, _ = encoder(utterances, u_lens)
 
-        hidden = (hidden[0].permute(1, 0, 2), hidden[1].permute(1, 0, 2))
-        hidden = (hidden[0].reshape(hidden[0].size(0), -1), hidden[1].reshape(hidden[1].size(0), -1))
+        # keys = keys.permute(1, 0, 2)
+        # values = values.permute(1, 0, 2)
+        outs = outs.permute(1, 0, 2)
+        predict_labels, attentions_weight = decoder(outs, lens = out_lens, mode = 'test')
+        predict_labels = predict_labels.permute(0, 2, 1)
 
-        keys = keys.permute(1, 0, 2)
-        values = values.permute(1, 0, 2)
-        predict_labels = decoder(keys, values, lens = out_lens, hidden = hidden, mode = 'test')[0].permute(0, 2, 1)
-        
         result.append(predict_labels)
+
+        del utterances
+        del u_lens
+        del outs
+        del out_lens
+        torch.cuda.empty_cache()
 
     return result
 
@@ -38,8 +43,8 @@ if __name__ == '__main__':
     
     encoder = Encoder(opt)
     decoder = Decoder(opt)
-    encoder.load_state_dict(torch.load('./' + opt.model_name + '/encoder_53.pt'))
-    decoder.load_state_dict(torch.load('./' + opt.model_name + '/decoder_53.pt'))
+    encoder.load_state_dict(torch.load('./' + opt.model_name + '/encoder_latest.pt'))
+    decoder.load_state_dict(torch.load('./' + opt.model_name + '/decoder_latest.pt'))
     encoder.to(opt.device)
     decoder.to(opt.device)
 

@@ -13,8 +13,8 @@ def training(opt, encoder, decoder, train_loader, val_loader):
     decoder.train()
 
     for epoch in range(opt.n_epoch):
-        if opt.teacher_forcing_ratio >= 0.8:
-            opt.teacher_forcing_ratio -= 0.1
+        
+        opt.teacher_forcing_ratio -= 0.1
 
         avg_loss = 0
         start = time.time()
@@ -32,13 +32,13 @@ def training(opt, encoder, decoder, train_loader, val_loader):
 
             outs, out_lens, hidden = encoder(utterances, u_lens)
 
-            hidden = (hidden[0].permute(1, 0, 2), hidden[1].permute(1, 0, 2))
-            hidden = (hidden[0].reshape(hidden[0].size(0), -1), hidden[1].reshape(hidden[1].size(0), -1))
+            hidden = hidden.permute(1, 0, 2)
+            hidden = hidden.reshape(hidden.size(0), -1)
 
             # keys = keys.permute(1, 0, 2)
             # values = values.permute(1, 0, 2)
             outs = outs.permute(1, 0, 2)
-            predict_labels, attentions_weight = decoder(outs, labels, out_lens)
+            predict_labels, attentions_weight = decoder(outs, labels, out_lens, hidden)
             predict_labels = predict_labels.permute(0, 2, 1)
             loss = criterion(predict_labels, labels)
             mask = torch.arange(labels.size(1)).unsqueeze(0).to(opt.device) >= l_lens.unsqueeze(1)
@@ -105,13 +105,13 @@ def validation(opt, encoder, decoder, val_loader):
         
         outs, out_lens, hidden = encoder(utterances, u_lens)
 
-        hidden = (hidden[0].permute(1, 0, 2), hidden[1].permute(1, 0, 2))
-        hidden = (hidden[0].reshape(hidden[0].size(0), -1), hidden[1].reshape(hidden[1].size(0), -1))
+        hidden = hidden.permute(1, 0, 2)
+        hidden = hidden.reshape(hidden.size(0), -1)
 
         # keys = keys.permute(1, 0, 2)
         # values = values.permute(1, 0, 2)
         outs = outs.permute(1, 0, 2)
-        predict_labels, attentions_weight = decoder(outs, labels, out_lens)
+        predict_labels, attentions_weight = decoder(outs, labels, out_lens, hidden)
         predict_labels = predict_labels.permute(0, 2, 1)
         loss = criterion(predict_labels, labels)
         mask = torch.arange(labels.size(1)).unsqueeze(0).to(opt.device) >= l_lens.unsqueeze(1)
@@ -177,8 +177,8 @@ if __name__ == '__main__':
 
     encoder = Encoder(opt)
     decoder = Decoder(opt)
-    # encoder.load_state_dict(torch.load('./pre_train_model/encoder_pretrained.pt'))
-    # decoder.load_state_dict(torch.load('./pre_train_model/decoder_pretrained.pt'))
+    # encoder.load_state_dict(torch.load('./LAS_latest/encoder_latest.pt'))
+    # decoder.load_state_dict(torch.load('./LAS_latest/decoder_latest.pt'))
     encoder.to(opt.device)
     decoder.to(opt.device)
     print(decoder)

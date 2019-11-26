@@ -7,18 +7,20 @@ from options import *
 from Encoder import *
 from Decoder import *
 from util import *
+from torch.utils.tensorboard import SummaryWriter
 
 def training(opt, encoder, decoder, train_loader, val_loader):
     encoder.train()
     decoder.train()
 
     for epoch in range(opt.n_epoch):
-        if opt.teacher_forcing_ratio >= 0.8:
-            opt.teacher_forcing_ratio -= 0.1
+        # if epoch % opt.reducing_iter == (opt.reducing_iter - 1) and opt.teacher_forcing_ratio >= 0.7:
+        #     opt.teacher_forcing_ratio -= 0.1
 
         avg_loss = 0
         start = time.time()
         for batch_idx, (utterances, labels, u_lens, l_lens) in enumerate(train_loader):
+            # utterances = utterances.permute(0, 2, 1)
             utterances = utterances.permute(1, 0, 2)
             utterances = utterances.to(opt.device)
             labels = labels.to(opt.device)
@@ -35,10 +37,8 @@ def training(opt, encoder, decoder, train_loader, val_loader):
             hidden = (hidden[0].permute(1, 0, 2), hidden[1].permute(1, 0, 2))
             hidden = (hidden[0].reshape(hidden[0].size(0), -1), hidden[1].reshape(hidden[1].size(0), -1))
 
-            # keys = keys.permute(1, 0, 2)
-            # values = values.permute(1, 0, 2)
             outs = outs.permute(1, 0, 2)
-            predict_labels, attentions_weight = decoder(outs, labels, out_lens)
+            predict_labels, attentions_weight = decoder(outs, labels, out_lens, hidden)
             predict_labels = predict_labels.permute(0, 2, 1)
             loss = criterion(predict_labels, labels)
             mask = torch.arange(labels.size(1)).unsqueeze(0).to(opt.device) >= l_lens.unsqueeze(1)
@@ -48,8 +48,8 @@ def training(opt, encoder, decoder, train_loader, val_loader):
             loss.backward()
 
 			# `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
-            nn.utils.clip_grad_norm_(encoder.parameters(), 0.25)   
-            nn.utils.clip_grad_norm_(decoder.parameters(), 0.25)   
+            # nn.utils.clip_grad_norm_(encoder.parameters(), 0.25)   
+            # nn.utils.clip_grad_norm_(decoder.parameters(), 0.25)   
 
             if batch_idx % opt.display_freq == (opt.display_freq - 1):
                 file_name = os.path.join('./' + opt.model_name, '{}.txt'.format(opt.model_name))
@@ -95,6 +95,7 @@ def validation(opt, encoder, decoder, val_loader):
     score = 0
     total_seq = 0
     for batch_idx, (utterances, labels, u_lens, l_lens) in enumerate(val_loader):
+        # utterances = utterances.permute(0, 2, 1)
         utterances = utterances.permute(1, 0, 2)
         utterances = utterances.to(opt.device)
         labels = labels.to(opt.device)
@@ -107,10 +108,8 @@ def validation(opt, encoder, decoder, val_loader):
         hidden = (hidden[0].permute(1, 0, 2), hidden[1].permute(1, 0, 2))
         hidden = (hidden[0].reshape(hidden[0].size(0), -1), hidden[1].reshape(hidden[1].size(0), -1))
 
-        # keys = keys.permute(1, 0, 2)
-        # values = values.permute(1, 0, 2)
         outs = outs.permute(1, 0, 2)
-        predict_labels, attentions_weight = decoder(outs, labels, out_lens)
+        predict_labels, attentions_weight = decoder(outs, labels, out_lens, hidden)
         predict_labels = predict_labels.permute(0, 2, 1)
         loss = criterion(predict_labels, labels)
         mask = torch.arange(labels.size(1)).unsqueeze(0).to(opt.device) >= l_lens.unsqueeze(1)
@@ -143,12 +142,16 @@ def validation(opt, encoder, decoder, val_loader):
         opt_file.write('\n')
 
     predict_labels = predict_labels.permute(0, 2, 1)
-    tmp_pred = transform_index_to_letter(predict_labels.unsqueeze(0))[0]
-    tmp_true = np.array(letter_list)[labels[0].detach().cpu().numpy()]
-    file_name_pred_val = os.path.join('./' + opt.model_name, '{}_pred_val.txt'.format(opt.model_name))
-    with open(file_name_pred_val, 'a') as opt_file:
-        opt_file.write('true = {}, predict = {}'.format(tmp_pred, tmp_true))
-        opt_file.write('\n')
+    pred = transform_index_to_letter(predict_labels.unsqueeze(0))
+    for i in range(3):
+        idx = np.random.randint(0, len(labels))
+        tmp_pred = pred[idx]
+
+        tmp_true = np.array(letter_list)[labels[idx].detach().cpu().numpy()]
+        file_name_pred_val = os.path.join('./' + opt.model_name, '{}_pred_val.txt'.format(opt.model_name))
+        with open(file_name_pred_val, 'a') as opt_file:
+            opt_file.write('Prediction = {}, Ground Truth = {}'.format(tmp_pred, tmp_true))
+            opt_file.write('\n')
 
     encoder.train()
     decoder.train()
@@ -165,8 +168,8 @@ if __name__ == '__main__':
     print("Data Loading Sucessful.....")
     encoder = Encoder(opt)
     decoder = Decoder(opt)
-    # encoder.load_state_dict(torch.load('./pre_train_model/encoder_pretrained.pt'))
-    # decoder.load_state_dict(torch.load('./pre_train_model/decoder_pretrained.pt'))
+    encoder.load_state_dict(torch.load('./LAS_latest/encoder_latest.pt'))
+    decoder.load_state_dict(torch.load('./LAS_latest/decoder_latest.pt'))
     encoder.to(opt.device)
     decoder.to(opt.device)
     print(decoder)

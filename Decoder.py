@@ -15,12 +15,13 @@ class Decoder(nn.Module):
         self.embedding = nn.Embedding(opt.vocab_size, opt.embedding_size)
         self.attention = Attention(opt)
         self.gumbel = Gumbel(torch.tensor([0.0]), torch.tensor([1.0]))
-        self.lstm1 = nn.LSTMCell(input_size = opt.value_size + opt.embedding_size, hidden_size = opt.decoder_hidden_dim)
-        # self.lstm2 = nn.LSTMCell(input_size = opt.decoder_hidden_dim, hidden_size = opt.key_size)
+        self.lstm1 = nn.LSTMCell(input_size = opt.embedding_size + opt.value_size, hidden_size = opt.decoder_hidden_dim)
+        self.lstm2 = nn.LSTMCell(input_size = opt.decoder_hidden_dim, hidden_size = opt.key_size)
         # self.linear = nn.Linear(opt.embedding_size, opt.key_size)
         self.key_network = nn.Linear(opt.encoder_hidden_dim * 2, opt.value_size)
         self.value_network = nn.Linear(opt.encoder_hidden_dim * 2, opt.key_size)
-        self.character_prob = nn.Linear(opt.decoder_hidden_dim, opt.vocab_size)
+        self.query_network = nn.Linear(opt.embedding_size, opt.key_size)
+        self.character_prob = nn.Linear(opt.key_size * 2, opt.vocab_size)
 
     def forward(self, encoder_out, text = None, lens = None, hidden = None, mode = 'train'):
         '''
@@ -41,11 +42,11 @@ class Decoder(nn.Module):
             prediction = torch.zeros(encoder_out.size(0), 1).to(self.opt.device)
 
         predictions = []
-        hidden_states = hidden
+        hidden_states = [hidden, None]
 
         key = self.key_network(encoder_out)
         value = self.value_network(encoder_out)
-        
+
         attentions = []
         for i in range(max_len):
             if(self.training):
@@ -53,13 +54,13 @@ class Decoder(nn.Module):
                     teacher_forcing = False
                 else:
                     teacher_forcing = True
-
+                    
                 if not teacher_forcing:
                     # noise = self.gumbel.sample(prediction.size()).to(self.opt.device)
                     # noise = Variable(noise.squeeze(2), requires_grad = True)
-                    # prediction = torch.log(prediction) + noise
+                    # prediction = prediction + noise
                     # prediction = F.softmax(prediction / self.opt.tao, dim = 1)
-                    char_embed = self.embedding(prediction.topk(1)[1].squeeze())
+                    char_embed = self.embedding(prediction.argmax(dim = 1))
                 else:
                     if i == 0:
                         char_embed = self.embedding(prediction.argmax(dim = 1))
@@ -67,32 +68,35 @@ class Decoder(nn.Module):
                         char_embed = embeddings[:, i - 1, :]
             else:
                 # noise = self.gumbel.sample(prediction.size()).to(self.opt.device)
-                # noise = noise.squeeze(2)
+                # noise = Variable(noise.squeeze(2), requires_grad = True)
                 # prediction = torch.log(prediction) + noise
-                char_embed = self.embedding(prediction.argmax(dim = 1))
+                if i == 0:
+                    char_embed = self.embedding(prediction.argmax(dim = 1))
+                else:
+                    char_embed = embeddings[:, i - 1, :]
 
-            if mode == 'pre_training':
-                context = torch.zeros(text.size(0), self.opt.value_size).to(self.opt.device)
-            else:
-                context, atten = self.attention(key, value, char_embed, lens)
+            # convert query from (N, E) -> (N, key_size)
+            query = self.query_network(char_embed)
 
-                # store attention weight to visualize it
-                attentions.append(atten.detach().cpu().numpy())
+            
+            context, atten = self.attention(key, value, query, lens)
+
+            # store attention weight to visualize it
+            attentions.append(atten.detach().cpu().numpy())
 
             inp = torch.cat([char_embed, context], dim=1)
-            hidden_states = self.lstm1(inp, hidden_states)
+            # inp = context
+            hidden_states[0] = self.lstm1(inp, hidden_states[0])
 
-            # inp_2 = hidden_states[0][0]
-            # hidden_states[1] = self.lstm2(inp_2,hidden_states[1])
+            inp_2 = hidden_states[0][0]
+            hidden_states[1] = self.lstm2(inp_2,hidden_states[1])
 
-            output = hidden_states[0]
-            prediction = self.character_prob(output)
+            output = hidden_states[1][0]
+            prediction = self.character_prob(torch.cat([output, context], dim=1))
             predictions.append(prediction.unsqueeze(1))
         
-        if mode == 'pre_training':
-            return torch.cat(predictions, dim=1)
-        else:
-            return torch.cat(predictions, dim=1), np.array(attentions)[:, 0, :lens[0]]
+
+        return torch.cat(predictions, dim=1), np.array(attentions)[:, 0, :lens[0]]
 
 
 

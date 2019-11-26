@@ -24,7 +24,7 @@ class Encoder(nn.Module):
         # self.blstm = nn.LSTM(input_size = opt.input_dim, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional)
         # self.pooling = nn.ModuleList(self.pooling)
 
-        # self.dropout =  LockedDropout(dropout = opt.dropout)
+        self.dropout =  LockedDropout(dropout = opt.dropout)
 
         
 
@@ -42,7 +42,7 @@ class Encoder(nn.Module):
         for layer in range(1, self.num_layers):
 
             outputs, _ = pad_packed_sequence(outputs)
-            
+            outputs = self.dropout(outputs)
         #     # outputs = outputs
             # permute the output to the shape of (N, T, hiddens)
             outputs = outputs.permute(1, 0, 2)
@@ -65,8 +65,6 @@ class Encoder(nn.Module):
             
         outs, lens = pad_packed_sequence(outputs)
 
-        
-
         return outs, lens, hidden
 
 class SimpleEncoder(nn.Module):
@@ -82,3 +80,49 @@ class SimpleEncoder(nn.Module):
         outputs, _ = pad_packed_sequence(outputs)
 
         return outputs, hidden
+
+
+class BasicBlock(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size, stride, padding, groups = 1):
+        super(BasicBlock, self).__init__()
+        self.conv = nn.Conv1d(in_channels, out_channels, kernel_size = kernel_size, stride = stride, padding = padding, bias = False, groups = groups)
+        self.bn = nn.BatchNorm1d(out_channels)
+#         self.drop = nn.Dropout(p = 0.2)
+        self.tanh = nn.Hardtanh(inplace = True)
+
+        
+    def forward(self, inputs):
+        outputs = self.conv(inputs)
+        outputs = self.bn(outputs)
+#         outputs = self.drop(outputs)
+        outputs = self.tanh(outputs)
+        return outputs
+
+class ConvEncoder(nn.Module):
+    def __init__(self, opt):
+        super(ConvEncoder, self).__init__()
+
+        self.num_layers = opt.encoder_num_layers
+        self.cnn1 = BasicBlock(opt.input_dim, opt.encoder_hidden_dim, kernel_size = 3, stride = 2, padding = 0)
+        # self.cnn2 = BasicBlock(opt.encoder_hidden_dim // 2, opt.encoder_hidden_dim, kernel_size = 3, stride = 2, padding = 0)
+
+        self.lstm = nn.LSTM(input_size = opt.encoder_hidden_dim, hidden_size = opt.encoder_hidden_dim, num_layers = 3, bias = False, bidirectional = opt.is_bidirectional)
+
+        # self.dropout =  LockedDropout(dropout = opt.dropout)
+
+    def forward(self, inputs, lens):
+
+        inputs = self.cnn1(inputs) 
+        # inputs = self.cnn2(inputs) 
+        inputs = inputs.permute(2, 0, 1)
+        lens = (lens - 1) // 2
+        rnn_inp = pack_padded_sequence(inputs, lengths = lens, enforce_sorted = False)
+        
+        outputs, _ = self.lstm(rnn_inp)
+
+        # outputs = self.dropout(outputs)
+            
+        outs, lens = pad_packed_sequence(outputs)
+
+        return outs, lens
+
