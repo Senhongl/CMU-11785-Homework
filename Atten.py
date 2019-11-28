@@ -8,7 +8,6 @@ class Attention(nn.Module):
         super(Attention, self).__init__()
         self.opt = opt
         
-        
     def forward(self, key, value, query, lengths):
         """
         :param query: (N, embed_size), decoder state of a single timestep
@@ -17,8 +16,9 @@ class Attention(nn.Module):
         :param lengths: (N,), lengths of source sequences
         :returns: (N, value_size) attended source context, and (N, T) attention vectors
         """
+
         # Input/output shape of bmm: (N, T, key_size), (N, key_size, 1) -> (N, T, 1)
-        attention = torch.bmm(key, query.unsqueeze(2)).squeeze(2) 
+        attention = torch.bmm(key, query.unsqueeze(2)).squeeze(2) / (self.opt.key_size**0.5)
         # attention = torch.bmm(key, query.unsqueeze(2)).squeeze(2) / (self.opt.key_size**0.5 / 2)
         # attention /= (torch.norm(key, p = 2, dim = (1, 2)) * torch.norm(query, p = 2, dim = 1)).unsqueeze(1)
 

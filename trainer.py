@@ -14,8 +14,8 @@ def training(opt, encoder, decoder, train_loader, val_loader):
     decoder.train()
 
     for epoch in range(opt.n_epoch):
-        # if epoch % opt.reducing_iter == (opt.reducing_iter - 1) and opt.teacher_forcing_ratio >= 0.7:
-        #     opt.teacher_forcing_ratio -= 0.1
+        if epoch % opt.reducing_iter == (opt.reducing_iter - 1):
+            opt.teacher_forcing_ratio -= 0.1
 
         avg_loss = 0
         start = time.time()
@@ -101,7 +101,6 @@ def validation(opt, encoder, decoder, val_loader):
         labels = labels.to(opt.device)
         u_lens = u_lens.to(opt.device)
         l_lens = l_lens.to(opt.device)
-
         
         outs, out_lens, hidden = encoder(utterances, u_lens)
 

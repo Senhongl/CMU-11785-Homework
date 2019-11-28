@@ -7,6 +7,7 @@ from options import *
 from Encoder import *
 from Decoder import *
 from util import *
+from torch.utils.tensorboard import SummaryWriter
 
 def training(opt, encoder, decoder, train_loader, val_loader):
     encoder.train()
@@ -14,12 +15,14 @@ def training(opt, encoder, decoder, train_loader, val_loader):
 
     for epoch in range(opt.n_epoch):
         
-        opt.teacher_forcing_ratio -= 0.1
+        # if epoch % opt.reducing_iter == (opt.reducing_iter - 1):
+        #     opt.teacher_forcing_ratio -= 0.1
 
         avg_loss = 0
         start = time.time()
         for batch_idx, (utterances, labels, u_lens, l_lens) in enumerate(train_loader):
             utterances = utterances.permute(1, 0, 2)
+            # utterances = utterances.permute(0, 2, 1)
             utterances = utterances.to(opt.device)
             labels = labels.to(opt.device)
             u_lens = u_lens.to(opt.device)
@@ -32,12 +35,11 @@ def training(opt, encoder, decoder, train_loader, val_loader):
 
             outs, out_lens, hidden = encoder(utterances, u_lens)
 
-            hidden = hidden.permute(1, 0, 2)
-            hidden = hidden.reshape(hidden.size(0), -1)
+            hidden = (hidden[0].permute(1, 0, 2), hidden[1].permute(1, 0, 2))
+            hidden = (hidden[0].reshape(hidden[0].size(0), -1), hidden[1].reshape(hidden[1].size(0), -1))
 
-            # keys = keys.permute(1, 0, 2)
-            # values = values.permute(1, 0, 2)
             outs = outs.permute(1, 0, 2)
+            # predict_labels = decoder(outs, labels, out_lens)
             predict_labels, attentions_weight = decoder(outs, labels, out_lens, hidden)
             predict_labels = predict_labels.permute(0, 2, 1)
             loss = criterion(predict_labels, labels)
@@ -48,9 +50,10 @@ def training(opt, encoder, decoder, train_loader, val_loader):
             loss.backward()
 
 			# `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
-            nn.utils.clip_grad_norm_(encoder.parameters(), 0.25)   
-            nn.utils.clip_grad_norm_(decoder.parameters(), 0.25)   
+            # nn.utils.clip_grad_norm_(encoder.parameters(), 0.25)   
+            # nn.utils.clip_grad_norm_(decoder.parameters(), 0.25)   
 
+            
             if batch_idx % opt.display_freq == (opt.display_freq - 1):
                 file_name = os.path.join('./' + opt.model_name, '{}.txt'.format(opt.model_name))
                 with open(file_name, 'a') as opt_file:
@@ -97,6 +100,7 @@ def validation(opt, encoder, decoder, val_loader):
     total_seq = 0
     for batch_idx, (utterances, labels, u_lens, l_lens) in enumerate(val_loader):
         utterances = utterances.permute(1, 0, 2)
+        # utterances = utterances.permute(0, 2, 1)
         utterances = utterances.to(opt.device)
         labels = labels.to(opt.device)
         u_lens = u_lens.to(opt.device)
@@ -105,12 +109,11 @@ def validation(opt, encoder, decoder, val_loader):
         
         outs, out_lens, hidden = encoder(utterances, u_lens)
 
-        hidden = hidden.permute(1, 0, 2)
-        hidden = hidden.reshape(hidden.size(0), -1)
+        hidden = (hidden[0].permute(1, 0, 2), hidden[1].permute(1, 0, 2))
+        hidden = (hidden[0].reshape(hidden[0].size(0), -1), hidden[1].reshape(hidden[1].size(0), -1))
 
-        # keys = keys.permute(1, 0, 2)
-        # values = values.permute(1, 0, 2)
         outs = outs.permute(1, 0, 2)
+        # predict_labels = decoder(outs, labels, out_lens)
         predict_labels, attentions_weight = decoder(outs, labels, out_lens, hidden)
         predict_labels = predict_labels.permute(0, 2, 1)
         loss = criterion(predict_labels, labels)
@@ -149,12 +152,14 @@ def validation(opt, encoder, decoder, val_loader):
         opt_file.write('\n')
 
     predict_labels = predict_labels.permute(0, 2, 1)
-    tmp_pred = ' '.join(word_list[np.argmax(predict_labels[0].detach().cpu().numpy(), axis = 0)])
-    tmp_true = ' '.join(word_list[labels[0].detach().cpu().numpy()])
-    file_name_pred_val = os.path.join('./' + opt.model_name, '{}_pred_val.txt'.format(opt.model_name))
-    with open(file_name_pred_val, 'a') as opt_file:
-        opt_file.write('true = {}, predict = {}'.format(tmp_pred, tmp_true))
-        opt_file.write('\n')
+    for i in range(3):
+        idx = np.random.randint(0, len(labels))
+        tmp_pred = ' '.join(word_list[np.argmax(predict_labels[idx].detach().cpu().numpy(), axis = 0)])
+        tmp_true = ' '.join(word_list[labels[idx].detach().cpu().numpy()])
+        file_name_pred_train = os.path.join('./' + opt.model_name, '{}_pred_val.txt'.format(opt.model_name))
+        with open(file_name_pred_train, 'a') as opt_file:
+            opt_file.write('Prediction = {} Ground truth = {}'.format(tmp_pred, tmp_true))
+            opt_file.write('\n')
 
     encoder.train()
     decoder.train()
@@ -176,17 +181,15 @@ if __name__ == '__main__':
     print("Transfer the transcript from words to index sucessfully.....")
 
     encoder = Encoder(opt)
-    decoder = Decoder(opt)
+    decoder = Decoder(opt)∏
     # encoder.load_state_dict(torch.load('./LAS_latest/encoder_latest.pt'))
     # decoder.load_state_dict(torch.load('./LAS_latest/decoder_latest.pt'))
     encoder.to(opt.device)
     decoder.to(opt.device)
-    print(decoder)
-    optimizer_encoder = Adam(encoder.parameters(), opt.lr, weight_decay = 1e-6)
-    optimizer_decoder = Adam(decoder.parameters(), opt.lr, weight_decay = 1e-6)
+    optimizer_encoder = Adam(encoder.parameters(), opt.lr)
+    optimizer_decoder = Adam(decoder.parameters(), opt.lr)
     criterion = nn.CrossEntropyLoss(reduction = 'none')
     criterion.to(opt.device)
-
     
     train_data = MyDataset(speech_train, transcript_train)
     dev_data = MyDataset(speech_valid, transcript_valid)

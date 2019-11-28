@@ -137,7 +137,7 @@ def transform_letter_to_index(transcript):
     letter_to_index_list = []
     for utterance in transcript:
         letters = []
-        letters.append(letter_list.index('<sos>'))
+        letters.append(letter_dict['<sos>'])
         for byte in utterance:
             string = byte.decode('utf8')
 
@@ -145,12 +145,17 @@ def transform_letter_to_index(transcript):
                 letters.append(letter_dict[character])
 
             letters.append(letter_dict[' '])
-
+        letters = letters[:-1]
         letters.append(letter_dict['<eos>'])
         letter_to_index_list.append(letters)
 
     return letter_to_index_list
 
+# def transform_index_to_letter(transcript):
+#     result = ''
+#     for idx in transcript:
+#         result += letter_list[idx]
+#     return result
 def transform_index_to_letter(transcript):
     '''
     :param transcript : Transcripts are the prediction input
@@ -182,3 +187,51 @@ def visualize(opt, weight):
     plt.colorbar(im)
     plt.savefig('./' + opt.model_name + '/attention_weight.png')
 
+# idx2chr = ['<eos>', ' ', "'", '+', '-', '.', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_']
+# chr2idx = {'<eos>': 0, ' ': 1, "'": 2, '+': 3, '-': 4, '.': 5, 'A': 6, 'B': 7, 'C': 8, 'D': 9, 'E': 10, 'F': 11, 'G': 12, 'H': 13, 'I': 14, 'J': 15, 'K': 16, 'L': 17, 'M': 18, 'N': 19, 'O': 20, 'P': 21, 'Q': 22, 'R': 23, 'S': 24, 'T': 25, 'U': 26, 'V': 27, 'W': 28, 'X': 29, 'Y': 30, 'Z': 31, '_': 32}
+
+# class MyDataset(torch.utils.data.Dataset):
+#     def __init__(self, x, y):
+#         self.x = x
+#         self.y = y
+#         if y is not None:
+#             self.total_labels = sum(len(yi) for yi in y)
+#         else:
+#             self.total_labels = -1
+
+#         print("n_utters", self.x.shape[0], "total_labels", self.total_labels)
+
+#     def __getitem__(self, idx):
+#         frames = self.x[idx]
+#         if self.y is None:
+#             labels = [-1]
+#         else:
+#             labels = [chr2idx[c] for c in self.y[idx]]
+#             labels = labels + [chr2idx['<eos>']]
+#         return to_float_tensor(frames), \
+#                to_int_tensor(np.array(labels))
+
+#     def __len__(self):
+#         return self.x.shape[0]  # // 10
+
+
+# def collate_fn(batch):
+#     batch_size = len(batch)
+#     batch = sorted(batch, key=lambda b: b[0].size(0), reverse=True)  # sort the batch by seq_len desc
+#     max_seq_len = batch[0][0].size(0)
+#     channels = batch[0][0].size(1)
+#     pack = torch.zeros(max_seq_len, batch_size, channels)
+#     seq_sizes = []
+#     max_label_len = max(label.size(0) for (f, label) in batch)
+#     all_labels = torch.zeros(batch_size, max_label_len).long()
+#     label_sizes = torch.zeros(batch_size).int()
+#     for i, (frames, label) in enumerate(batch):
+#         seq_size = frames.size(0)
+#         seq_sizes.append(seq_size)
+
+#         labele_size = label.size(0)
+#         label_sizes[i] = labele_size
+
+#         pack[:seq_size, i, :] = frames
+#         all_labels[i, :labele_size] = label
+#     return pack, seq_sizes, all_labels, label_sizes
