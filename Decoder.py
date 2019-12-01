@@ -33,14 +33,13 @@ class Decoder(nn.Module):
 
     def forward(self, encoder_out, text = None, lens = None, hidden = None, mode = 'train'):
         '''
-        :param key :(N, T, key_size) Output of the Encoder Key projection layer
-        :param values: (N, T, value_size) Output of the Encoder Value projection layer
+        :param encoder_out:(N, T, encoder_hidden_dim) Output of the Encoder
         :param text: (N, text_len) Batch input of text with text_length
         :param lens: (N, ) Batch input of sequence length
         :return predictions: Returns the character perdiction probability 
         '''
 
-        if mode == 'train' or mode == 'pre_training' or mode == 'val':
+        if mode == 'train' or mode == 'val':
             max_len =  text.shape[1]
             # the shape of embeddings would be (N, text_len, embed_size)
             embeddings = self.embedding(text)
@@ -78,15 +77,10 @@ class Decoder(nn.Module):
                 # noise = self.gumbel.sample(prediction.size()).to(self.opt.device)
                 # noise = Variable(noise.squeeze(2), requires_grad = True)
                 # prediction = torch.log(prediction) + noise
-                # if i == 0:
-                #     char_embed = self.embedding(prediction.argmax(dim = 1))
-                # else:
-                #     char_embed = embeddings[:, i - 1, :]
                 if i == 0:
                     char_embed = self.embedding(prediction.argmax(dim = 1))
                 else:
                     char_embed = embeddings[:, i - 1, :]
-                # char_embed = self.embedding(prediction.argmax(dim = 1))
 
             # char_embed = self.dropout(char_embed.unsqueeze(1)).squeeze(1)
             # convert query from (N, E) -> (N, key_size)
@@ -95,19 +89,14 @@ class Decoder(nn.Module):
             context, atten = self.attention(key, value, query, lens)
 
             inp = torch.cat([char_embed, context], dim=1)
-            # inp = context
             inp = self.drop1(inp.unsqueeze(1)).squeeze(1)
             hidden_states[0] = self.lstm1(inp, hidden_states[0])
 
-            # after_drop = self.dropout(hidden_states[0][0].unsqueeze(1)).squeeze(1)
-            # hidden_states[0] = (self.dropout(hidden_states[0][0].unsqueeze(1)).squeeze(1), self.dropout(hidden_states[0][1].unsqueeze(1)).squeeze(1))
+        
             inp_2 = hidden_states[0][0]
             inp_2 = self.drop2(inp_2.unsqueeze(1)).squeeze(1)
             hidden_states[1] = self.lstm2(inp_2,hidden_states[1])
 
-            # after_drop = self.dropout(hidden_states[1][0].unsqueeze(1)).squeeze(1)
-            # hidden_states[1] = (self.dropout(hidden_states[1][0].unsqueeze(1)).squeeze(1), self.dropout(hidden_states[1][1].unsqueeze(1)).squeeze(1))
-            
             outputs = hidden_states[1][0]
 
             query = self.query_network(outputs)
@@ -140,19 +129,13 @@ class Decoder(nn.Module):
             context, atten = self.attention(key, value, query, lens)
 
             inp = torch.cat([char_embed, context], dim=1)
-            # inp = context
-            # inp = self.drop1(inp.unsqueeze(1)).squeeze(1)
+            
             hidden_states[0] = self.lstm1(inp, hidden_states[0])
 
-            # after_drop = self.dropout(hidden_states[0][0].unsqueeze(1)).squeeze(1)
-            # hidden_states[0] = (self.dropout(hidden_states[0][0].unsqueeze(1)).squeeze(1), self.dropout(hidden_states[0][1].unsqueeze(1)).squeeze(1))
+        
             inp_2 = hidden_states[0][0]
-            # inp_2 = self.drop2(inp_2.unsqueeze(1)).squeeze(1)
             hidden_states[1] = self.lstm2(inp_2,hidden_states[1])
 
-            # after_drop = self.dropout(hidden_states[1][0].unsqueeze(1)).squeeze(1)
-            # hidden_states[1] = (self.dropout(hidden_states[1][0].unsqueeze(1)).squeeze(1), self.dropout(hidden_states[1][1].unsqueeze(1)).squeeze(1))
-            
             outputs = hidden_states[1][0]
 
             query = self.query_network(outputs)

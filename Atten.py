@@ -10,7 +10,7 @@ class Attention(nn.Module):
         
     def forward(self, key, value, query, lengths):
         """
-        :param query: (N, embed_size), decoder state of a single timestep
+        :param query: (N, key_size), decoder state of a single timestep
         :param key: (N, T, key_size), Key Projection from Encoder per time step
         :param value: (N, T, value_size), Value Projection from Encoder per time step
         :param lengths: (N,), lengths of source sequences

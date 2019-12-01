@@ -17,24 +17,13 @@ class Encoder(nn.Module):
 
         self.blstm = torch.nn.ModuleList(self.blstm)
 
-        # self.pooling = []
-        # for layer in range(1, self.num_layers):
-        #     self.pooling.append(nn.AvgPool1d(kernel_size = 2, stride = 2))
-        # # self.cnn = BasicBlock(opt.input_dim, hidden_dim, kernel_size = 3, stride = 2, padding = 0)
-        # # self.blstm = nn.LSTM(input_size = opt.input_dim, hidden_size = hidden_dim, num_layers = 1, bias = False, bidirectional = opt.is_bidirectional)
-        # self.pooling = nn.ModuleList(self.pooling)
-
         self.dropout =  LockedDropout(dropout = opt.dropout)
 
         
 
     def forward(self, inputs, lens):
 
-        # inputs = self.cnn(inputs) 
-        # inputs = inputs.permute(2, 0, 1)
         rnn_inp = pack_padded_sequence(inputs, lengths = lens, enforce_sorted = False)
-        
-        # outputs, hidden = self.blstm(rnn_inp)
 
         # the shape of output (T, N, hidden * 2)
         outputs, _ = self.blstm[0](rnn_inp)
@@ -42,18 +31,13 @@ class Encoder(nn.Module):
         for layer in range(1, self.num_layers):
 
             outputs, _ = pad_packed_sequence(outputs)
-            # outputs = self.dropout(outputs)
-        #     # outputs = outputs
+
             # permute the output to the shape of (N, T, hiddens)
             outputs = outputs.permute(1, 0, 2)
-            # outputs = outputs.permute(1, 0, 2)
             if outputs.size(1) % 2 == 1:
                 outputs = outputs[:, :-1, :].reshape(outputs.size(0), outputs.size(1) // 2, outputs.size(2) * 2)
             else:
                 outputs = outputs.reshape(outputs.size(0), outputs.size(1) // 2, outputs.size(2) * 2)
-
-            # pooling to make the pyramidal structure
-            # outputs = self.pooling[layer - 1](outputs)
 
             # permute the output back to the shape of (T, N, hiddens)
             outputs = outputs.permute(1, 0, 2)
