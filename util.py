@@ -145,7 +145,6 @@ def transform_letter_to_index(transcript):
                 letters.append(letter_dict[character])
 
             letters.append(letter_dict[' '])
-        letters = letters[:-1]
         letters.append(letter_dict['<eos>'])
         letter_to_index_list.append(letters)
 
