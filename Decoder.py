@@ -14,12 +14,14 @@ class Decoder(nn.Module):
         self.opt = opt
         self.embedding = nn.Embedding(opt.vocab_size, opt.embedding_size)
         self.attention = Attention(opt)
-        self.gumbel = Gumbel(torch.tensor([0.0]), torch.tensor([1.0]))
+
+        # the gumbel noise did not get the idea result
+        #self.gumbel = Gumbel(torch.tensor([0.0]), torch.tensor([1.0]))
+
         self.lstm1 = nn.LSTMCell(input_size = opt.embedding_size + opt.value_size, hidden_size = opt.decoder_hidden_dim)
         self.drop1 = LockedDropout(dropout = opt.dropout)
         self.lstm2 = nn.LSTMCell(input_size = opt.decoder_hidden_dim, hidden_size = opt.key_size)
         self.drop2 = LockedDropout(dropout = opt.dropout)
-        # self.linear = nn.Linear(opt.embedding_size, opt.key_size)
         self.key_network = nn.Linear(opt.encoder_hidden_dim * 2, opt.value_size)
         self.value_network = nn.Linear(opt.encoder_hidden_dim * 2, opt.key_size)
         self.query_network = nn.Linear(opt.embedding_size, opt.key_size)
@@ -31,22 +33,17 @@ class Decoder(nn.Module):
 
         
 
-    def forward(self, encoder_out, text = None, lens = None, hidden = None, mode = 'train'):
+    def forward(self, encoder_out, text = None, lens = None, hidden = None):
         '''
         :param encoder_out:(N, T, encoder_hidden_dim) Output of the Encoder
         :param text: (N, text_len) Batch input of text with text_length
         :param lens: (N, ) Batch input of sequence length
         :return predictions: Returns the character perdiction probability 
         '''
-
-        if mode == 'train' or mode == 'val':
-            max_len =  text.shape[1]
-            # the shape of embeddings would be (N, text_len, embed_size)
-            embeddings = self.embedding(text)
-            prediction = torch.zeros(text.shape[0], 1).to(self.opt.device)
-        else:
-            max_len = 250
-            prediction = torch.zeros(encoder_out.size(0), 1).to(self.opt.device)
+        max_len =  text.shape[1]
+        # the shape of embeddings would be (N, text_len, embed_size)
+        embeddings = self.embedding(text)
+        prediction = torch.zeros(text.shape[0], 1).to(self.opt.device)
 
         predictions = []
         hidden_states = [hidden, None]
@@ -63,10 +60,6 @@ class Decoder(nn.Module):
                     teacher_forcing = True
 
                 if not teacher_forcing:
-                    # noise = self.gumbel.sample(prediction.size()).to(self.opt.device)
-                    # noise = Variable(noise.squeeze(2), requires_grad = True)
-                    # prediction = prediction + noise
-                    # prediction = F.softmax(prediction / self.opt.tao, dim = 1)
                     char_embed = self.embedding(prediction.argmax(dim = 1))
                 else:
                     if i == 0:
@@ -74,15 +67,12 @@ class Decoder(nn.Module):
                     else:
                         char_embed = embeddings[:, i - 1, :]
             else:
-                # noise = self.gumbel.sample(prediction.size()).to(self.opt.device)
-                # noise = Variable(noise.squeeze(2), requires_grad = True)
-                # prediction = torch.log(prediction) + noise
+                # for validation
                 if i == 0:
                     char_embed = self.embedding(prediction.argmax(dim = 1))
                 else:
                     char_embed = embeddings[:, i - 1, :]
 
-            # char_embed = self.dropout(char_embed.unsqueeze(1)).squeeze(1)
             # convert query from (N, E) -> (N, key_size)
             query = self.query_network(char_embed)
 
@@ -150,13 +140,14 @@ class Decoder(nn.Module):
         return torch.cat(predictions, dim = 1)
 
 
-    def BeamSearch(self, encoder_out, lens = None, hidden = None, beam_width = 10):
+    def BeamSearch(self, encoder_out, lens = None, hidden = None):
+        '''It is only wrote for testing and when the batch size of test dataset is 1.
+        '''
         max_len = 250
 
         key = self.key_network(encoder_out)
         value = self.value_network(encoder_out)
         predictions = []
-        hidden_states = [hidden, None]
         Path = [{'hypothesis': torch.LongTensor([0]).to(self.opt.device), 'score': 0, 'hidden_states': [hidden, None], 'history_path': []}]
         complete_hypothesis = []
 
@@ -189,28 +180,37 @@ class Decoder(nn.Module):
                 fc_outputs = self.tanh(fc_outputs)
                 character_prob_distrib = self.character_prob(fc_outputs)
 
-                local_score, local_idx = F.log_softmax(character_prob_distrib, dim = 1).topk(beam_width)
+                local_score, local_idx = torch.topk(F.log_softmax(character_prob_distrib, dim = 1), self.opt.beam_width, dim = 1)
 
-                for tmp_beam_idx in range(beam_width):
+                for tmp_beam_idx in range(self.opt.beam_width):
                     tmp_dict = {}
                     tmp_dict['score'] = path['score'] + local_score[0][tmp_beam_idx]
                     tmp_dict['hypothesis'] = local_idx[:, tmp_beam_idx]
                     tmp_dict['history_path'] = path['history_path'] + [local_idx[:, tmp_beam_idx]]
-                    tmp_dict['hidden_states'] = hidden_states
+                    tmp_dict['hidden_states'] = hidden_states[:]
+                    tmp_path.append(tmp_dict)
+            
+            tmp_path = sorted(tmp_path, key = lambda p : p['score'], reverse = True)[:self.opt.beam_width]
+            if idx == max_len - 1:
+                for path in tmp_path:
+                    path['hypothesis'] = 33
+                    path['history_path'] = path['history_path'] + [33]
 
-                    # if the idx is <eos> idx, get it to the complete hypothesis set
-                    if local_idx[0][tmp_beam_idx] == 33:
-                        complete_hypothesis.append(tmp_dict)
-                    # else, store it and compare the score at the end
-                    else:
-                        tmp_path.append(tmp_dict)
+            Path = []
+            for path in tmp_path:
+                # if the idx is <eos> idx, get it to the complete hypothesis set
+                if path['hypothesis'] == 33:
+                    normalization = (5 + len(path['history_path']))**0.65 / 6**0.65
+                    path['score'] /= normalization
+                    complete_hypothesis.append(path)
+                # else, store it and compare the score at the end
+                else:
+                    Path.append(path)
 
-            if len(complete_hypothesis) == beam_width:
+            if len(Path) == 0:
                 break
-            else:
-                Path = sorted(tmp_path, key = lambda p : p['score'], reverse = True)[:beam_width]
 
-        best_one = sorted(complete_hypothesis, key = lambda p : p['score'] / len(p['history_path']), reverse = True)[0]
+        best_one = sorted(complete_hypothesis, key = lambda p : p['score'], reverse = True)[0]
 
         return best_one['history_path'][:-1]
 

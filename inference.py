@@ -27,9 +27,13 @@ def inference(opt, encoder, decoder, test_loader):
         outs = outs.permute(1, 0, 2)
 
         predict_labels = decoder.BeamSearch(outs, lens = out_lens, hidden = hidden)
-        predict_labels = predict_labels.permute(0, 2, 1)
 
-        result.append(predict_labels)
+        tmp_res = ''
+        for i in predict_labels:
+            tmp_res += letter_list[i]
+
+        print(batch_idx, tmp_res)
+        result.append(tmp_res)
 
         del utterances
         del u_lens
@@ -38,6 +42,7 @@ def inference(opt, encoder, decoder, test_loader):
         torch.cuda.empty_cache()
 
     return result
+
 
 # def inference(opt, encoder, decoder, test_loader):
 #     encoder.eval()
@@ -85,16 +90,16 @@ if __name__ == '__main__':
     test_loader_args = dict(shuffle=False, batch_size = 1, pin_memory=True, collate_fn = collate_fn_test) 
     test_loader = Data.DataLoader(test_data, **test_loader_args)
 
-    tmp_result = inference(opt, encoder, decoder, test_loader)
+    result = inference(opt, encoder, decoder, test_loader)
 
-    tmp_result = transform_index_to_letter(tmp_result)
+    # tmp_result = transform_index_to_letter(tmp_result)
 
-    result = []
-    for utterance in tmp_result:
-        for word_idx in range(len(utterance)):
-            if utterance[word_idx] == '<':
-                break
-        result.append(utterance[:word_idx])
+    # result = []
+    # for utterance in tmp_result:
+    #     for word_idx in range(len(utterance)):
+    #         if utterance[word_idx] == '<':
+    #             break
+    #     result.append(utterance[:word_idx - 1])
 
     dataframe = pd.DataFrame({'Id':[i for i in range(len(result))],'Predicted':result})
 

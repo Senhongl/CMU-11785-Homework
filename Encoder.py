@@ -89,18 +89,18 @@ class ConvEncoder(nn.Module):
 
         self.num_layers = opt.encoder_num_layers
         self.cnn1 = BasicBlock(opt.input_dim, opt.encoder_hidden_dim, kernel_size = 3, stride = 2, padding = 0)
-        # self.cnn2 = BasicBlock(opt.encoder_hidden_dim // 2, opt.encoder_hidden_dim, kernel_size = 3, stride = 2, padding = 0)
+        self.cnn2 = BasicBlock(opt.encoder_hidden_dim // 2, opt.encoder_hidden_dim, kernel_size = 3, stride = 2, padding = 0)
 
         self.lstm = nn.LSTM(input_size = opt.encoder_hidden_dim, hidden_size = opt.encoder_hidden_dim, num_layers = 3, bias = False, bidirectional = opt.is_bidirectional)
 
-        # self.dropout =  LockedDropout(dropout = opt.dropout)
+        self.dropout =  LockedDropout(dropout = opt.dropout)
 
     def forward(self, inputs, lens):
 
         inputs = self.cnn1(inputs) 
-        # inputs = self.cnn2(inputs) 
+        inputs = self.cnn2(inputs) 
         inputs = inputs.permute(2, 0, 1)
-        lens = (lens - 1) // 2
+        lens = ((lens - 1) // 2 - 1) // 2
         rnn_inp = pack_padded_sequence(inputs, lengths = lens, enforce_sorted = False)
         
         outputs, _ = self.lstm(rnn_inp)

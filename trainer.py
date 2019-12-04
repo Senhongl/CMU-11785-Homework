@@ -7,15 +7,15 @@ from options import *
 from Encoder import *
 from Decoder import *
 from util import *
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 def training(opt, encoder, decoder, train_loader, val_loader):
     encoder.train()
     decoder.train()
 
     for epoch in range(opt.n_epoch):
-        if epoch % opt.reducing_iter == (opt.reducing_iter - 1):
-            opt.teacher_forcing_ratio -= 0.1
+        # if epoch % opt.reducing_iter == (opt.reducing_iter - 1):
+        #     opt.teacher_forcing_ratio -= 0.1
 
         avg_loss = 0
         start = time.time()
